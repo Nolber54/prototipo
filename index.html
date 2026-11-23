@@ -1,0 +1,2219 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#12161E" />
+  <title>Suscript! — Control Transparente de Suscripciones (MXN)</title>
+
+  <!-- Google Fonts: Cinzel para logotipo + Inter para interfaz -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: {
+              950: '#0E1117',
+              900: '#12161E',
+              850: '#181D27',
+              800: '#1E2430',
+              700: '#272F3E',
+            },
+            champagne: {
+              300: '#E5CE94',
+              400: '#D4B46A',
+              500: '#C5A059',
+              600: '#A68340',
+            },
+            ivory: {
+              50: '#FAF9F6',
+              100: '#F5F3EE',
+              200: '#EAE6DC',
+              300: '#DCD5C7',
+            }
+          },
+          fontFamily: {
+            serifBrand: ['Cinzel', 'Georgia', 'serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            'gold-glow': '0 0 25px rgba(212, 180, 106, 0.22)',
+            'gold-strong': '0 0 35px rgba(212, 180, 106, 0.42)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+
+    :root {
+      --bg-950: #0E1117;
+      --bg-900: #12161E;
+      --bg-850: #181D27;
+      --bg-800: #1E2430;
+      --bg-700: #272F3E;
+      --accent-300: #E5CE94;
+      --accent-400: #D4B46A;
+      --accent-500: #C5A059;
+      --accent-600: #A68340;
+      --accent-glow: rgba(212, 180, 106, 0.25);
+      --accent-glow-strong: rgba(212, 180, 106, 0.45);
+      --ui-radius-card: 1.5rem;
+      --ui-font-main: 'Inter', system-ui, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-900) !important;
+      color: #F8FAFC;
+      font-family: var(--ui-font-main) !important;
+      overflow-x: hidden;
+      transition: background-color 0.25s ease;
+    }
+
+    /* Dynamic Theme Overrides for Tailwind classes */
+    .bg-obsidian-950 { background-color: var(--bg-950) !important; }
+    .bg-obsidian-900 { background-color: var(--bg-900) !important; }
+    .bg-obsidian-900\/95 { background-color: color-mix(in srgb, var(--bg-900) 95%, transparent) !important; }
+    .bg-obsidian-900\/80 { background-color: color-mix(in srgb, var(--bg-900) 80%, transparent) !important; }
+    .bg-obsidian-850 { background-color: var(--bg-850) !important; }
+    .bg-obsidian-850\/95 { background-color: color-mix(in srgb, var(--bg-850) 95%, transparent) !important; }
+    .bg-obsidian-800 { background-color: var(--bg-800) !important; }
+    .bg-obsidian-800\/90 { background-color: color-mix(in srgb, var(--bg-800) 90%, transparent) !important; }
+    .bg-obsidian-800\/80 { background-color: color-mix(in srgb, var(--bg-800) 80%, transparent) !important; }
+    .bg-obsidian-800\/60 { background-color: color-mix(in srgb, var(--bg-800) 60%, transparent) !important; }
+    .hover\:bg-obsidian-800:hover { background-color: var(--bg-800) !important; }
+    .hover\:bg-obsidian-700:hover { background-color: var(--bg-700) !important; }
+
+    .text-champagne-300 { color: var(--accent-300) !important; }
+    .text-champagne-400 { color: var(--accent-400) !important; }
+    .text-champagne-400\/90 { color: color-mix(in srgb, var(--accent-400) 90%, transparent) !important; }
+    .hover\:text-champagne-300:hover { color: var(--accent-300) !important; }
+    .hover\:text-champagne-400:hover { color: var(--accent-400) !important; }
+    .bg-champagne-400 { background-color: var(--accent-400) !important; }
+    .hover\:bg-champagne-300:hover { background-color: var(--accent-300) !important; }
+    .bg-champagne-400\/10 { background-color: color-mix(in srgb, var(--accent-400) 10%, transparent) !important; }
+    .bg-champagne-400\/15 { background-color: color-mix(in srgb, var(--accent-400) 15%, transparent) !important; }
+    .bg-champagne-400\/20 { background-color: color-mix(in srgb, var(--accent-400) 20%, transparent) !important; }
+    .hover\:bg-champagne-400\/20:hover { background-color: color-mix(in srgb, var(--accent-400) 20%, transparent) !important; }
+    .hover\:bg-champagne-400\/25:hover { background-color: color-mix(in srgb, var(--accent-400) 25%, transparent) !important; }
+    .hover\:bg-champagne-400\/30:hover { background-color: color-mix(in srgb, var(--accent-400) 30%, transparent) !important; }
+    .border-champagne-400 { border-color: var(--accent-400) !important; }
+    .border-champagne-400\/20 { border-color: color-mix(in srgb, var(--accent-400) 20%, transparent) !important; }
+    .border-champagne-400\/30 { border-color: color-mix(in srgb, var(--accent-400) 30%, transparent) !important; }
+    .border-champagne-400\/35 { border-color: color-mix(in srgb, var(--accent-400) 35%, transparent) !important; }
+    .border-champagne-400\/40 { border-color: color-mix(in srgb, var(--accent-400) 40%, transparent) !important; }
+    .border-champagne-400\/50 { border-color: color-mix(in srgb, var(--accent-400) 50%, transparent) !important; }
+    .border-champagne-400\/70 { border-color: color-mix(in srgb, var(--accent-400) 70%, transparent) !important; }
+    .hover\:border-champagne-400\/40:hover { border-color: color-mix(in srgb, var(--accent-400) 40%, transparent) !important; }
+    .hover\:border-champagne-400\/50:hover { border-color: color-mix(in srgb, var(--accent-400) 50%, transparent) !important; }
+    .focus\:border-champagne-400:focus { border-color: var(--accent-400) !important; }
+    .from-champagne-300 { --tw-gradient-from: var(--accent-300) var(--tw-gradient-from-position) !important; }
+    .from-champagne-400 { --tw-gradient-from: var(--accent-400) var(--tw-gradient-from-position) !important; }
+    .to-champagne-500 { --tw-gradient-to: var(--accent-500) var(--tw-gradient-to-position) !important; }
+    .hover\:from-champagne-300:hover { --tw-gradient-from: var(--accent-300) var(--tw-gradient-from-position) !important; }
+    .hover\:to-champagne-400:hover { --tw-gradient-to: var(--accent-400) var(--tw-gradient-to-position) !important; }
+    .shadow-gold-glow { box-shadow: 0 0 25px var(--accent-glow) !important; }
+    .shadow-gold-strong { box-shadow: 0 0 35px var(--accent-glow-strong) !important; }
+
+    /* Compact Density Mode */
+    body.ui-compact main .space-y-6 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem !important; }
+    body.ui-compact .p-6 { padding: 1.1rem !important; }
+    body.ui-compact .p-5 { padding: 0.95rem !important; }
+    body.ui-compact .p-4 { padding: 0.75rem !important; }
+
+    /* Border Radius Style */
+    body.ui-sharp .rounded-3xl { border-radius: 0.75rem !important; }
+    body.ui-sharp .rounded-2xl { border-radius: 0.5rem !important; }
+    body.ui-sharp .rounded-xl { border-radius: 0.375rem !important; }
+
+    body.ui-pill .rounded-3xl { border-radius: 2.25rem !important; }
+    body.ui-pill .rounded-2xl { border-radius: 1.5rem !important; }
+
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #12161E; }
+    ::-webkit-scrollbar-thumb { background: #272F3E; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #D4B46A; }
+
+    @keyframes pulseBorder {
+      0%, 100% { box-shadow: 0 0 18px rgba(212, 180, 106, 0.22), inset 0 0 10px rgba(212, 180, 106, 0.06); }
+      50% { box-shadow: 0 0 32px rgba(212, 180, 106, 0.48), inset 0 0 18px rgba(212, 180, 106, 0.14); }
+    }
+    .premium-card-glow { animation: pulseBorder 3.5s infinite ease-in-out; }
+
+    .view-section { animation: fadeIn 0.22s ease-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  
+    /* Mobile App Shell & Native Touch Optimizations */
+    html, body {
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-y: contain;
+      touch-action: manipulation;
+    }
+
+    .safe-top { padding-top: max(0.75rem, env(safe-area-inset-top)); }
+    .safe-bottom { padding-bottom: max(0.65rem, env(safe-area-inset-bottom)); }
+    .pb-app-nav { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
+
+    /* Horizontal Snap Carousel for Mobile KPIs & Quick Chips */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Bottom Sheet Animation for Mobile Modals */
+    @keyframes sheetUp {
+      from { transform: translateY(100%); opacity: 0.6; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .bottom-sheet-enter {
+      animation: sheetUp 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Desktop preview frame for mobile app */
+    @media (min-width: 640px) {
+      body.mobile-frame-bg {
+        background: radial-gradient(circle at top, #1b2230 0%, #090b10 100%) !important;
+      }
+    }
+
+  </style>
+</head>
+<body class="mobile-frame-bg text-slate-50 antialiased selection:bg-champagne-400 selection:text-obsidian-950 min-h-screen flex justify-center">
+
+  <!-- Contenedor App Móvil (100% pantalla en celular, marco tipo smartphone en pantallas grandes) -->
+  <div id="mobile-app-shell" class="w-full max-w-[440px] min-h-screen bg-obsidian-900 sm:my-4 sm:min-h-[844px] sm:max-h-[900px] sm:rounded-[2.75rem] sm:border-[6px] sm:border-slate-800/90 sm:shadow-[0_25px_70px_rgba(0,0,0,0.75)] flex flex-col relative overflow-x-hidden">
+
+    <!-- ==================== TOP APP BAR MÓVIL ==================== -->
+    <header class="sticky top-0 z-30 bg-obsidian-900/95 backdrop-blur-xl border-b border-slate-800/80 px-4 safe-top pb-3 flex items-center justify-between">
+      <div class="flex items-center gap-2.5" onclick="navigateTo('inicio')">
+        <div class="w-9 h-9 shrink-0">
+          <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-[0_0_8px_rgba(212,180,106,0.35)]">
+            <polygon points="28,12 72,12 94,36 50,90 6,36" fill="none" stroke="#D4B46A" stroke-width="4" stroke-linejoin="round"/>
+            <polyline points="6,36 94,36" fill="none" stroke="#D4B46A" stroke-width="2.5" opacity="0.7"/>
+            <text x="50" y="55" text-anchor="middle" fill="#F8FAFC" font-family="Cinzel, Georgia, serif" font-weight="700" font-size="40">S</text>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="font-serifBrand text-base tracking-[0.14em] text-slate-50 font-bold leading-none">SUSCRIPT!</span>
+          </div>
+          <span id="mobile-plan-label" class="text-[10px] text-champagne-400 font-semibold block mt-0.5">Plan Gratis (0/3)</span>
+        </div>
+      </div>
+
+      <!-- Acciones rápidas superiores -->
+      <div class="flex items-center gap-1.5">
+        <button id="btn-install-app" onclick="triggerInstallApp()" aria-label="Instalar App" class="px-2.5 h-9 rounded-full bg-champagne-400 text-obsidian-950 text-[11px] font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-transform">
+          <i data-lucide="download" class="w-3.5 h-3.5"></i>
+          <span>Instalar</span>
+        </button>
+        <button onclick="navigateTo('personalizar')" aria-label="Personalizar Interfaz" class="w-9 h-9 rounded-full bg-obsidian-800 border border-slate-700/80 flex items-center justify-center text-champagne-400 active:scale-90 transition-transform relative">
+          <i data-lucide="palette" class="w-4 h-4"></i>
+          <span id="nav-custom-badge" class="absolute -top-1 -right-1 text-[8px] px-1 rounded-full bg-champagne-400 text-obsidian-950 font-extrabold">PRO</span>
+        </button>
+
+        <button onclick="navigateTo('planes')" aria-label="Planes MXN" class="px-2.5 h-9 rounded-full bg-obsidian-800 border border-champagne-400/40 text-champagne-400 text-[11px] font-semibold flex items-center gap-1 active:scale-95 transition-transform">
+          <i data-lucide="gem" class="w-3.5 h-3.5"></i>
+          <span>Planes</span>
+        </button>
+
+        <button onclick="openProfileModal()" aria-label="Perfil de Usuario" class="w-9 h-9 rounded-full bg-gradient-to-br from-champagne-400 to-champagne-600 flex items-center justify-center text-obsidian-950 font-bold text-xs active:scale-90 transition-transform shadow-sm">
+          <span id="header-avatar">US</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ==================== CONTENIDO SCROLLABLE DE LA APP ==================== -->
+    <main class="flex-1 px-4 pt-4 pb-app-nav space-y-4 overflow-y-auto">
+
+      <!-- Título Contextual Compacto -->
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 id="page-title" class="text-lg font-bold text-slate-50 tracking-tight leading-snug">Panel de Control</h1>
+          <p id="page-subtitle" class="text-[11px] text-slate-400">Control transparente en Pesos Mexicanos (MXN)</p>
+        </div>
+        <button onclick="navigateTo('acerca')" class="px-2.5 py-1.5 rounded-xl bg-obsidian-800 border border-slate-800 text-[11px] font-medium text-slate-300 flex items-center gap-1 active:scale-95">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-champagne-400"></i>
+          <span>ODS</span>
+        </button>
+      </div>
+
+      <!-- Banner de Transparencia Compacto -->
+      <div id="privacy-info-banner" class="px-3.5 py-2.5 rounded-2xl bg-obsidian-800/90 border border-slate-800 flex items-center justify-between gap-2 text-[11px] text-slate-300">
+        <div class="flex items-center gap-2 min-w-0">
+          <i data-lucide="lock" class="w-3.5 h-3.5 text-champagne-400 shrink-0"></i>
+          <span class="truncate"><strong>100% Privado:</strong> Sin contraseñas ni bancos.</span>
+        </div>
+        <button onclick="openProfileModal()" id="banner-register-cta" class="text-champagne-400 font-semibold whitespace-nowrap shrink-0">
+          Perfil →
+        </button>
+      </div>
+
+      <!-- ==================== VISTA 1: PANEL PRINCIPAL (MOBILE FIRST) ==================== -->
+      <section id="view-inicio" class="view-section space-y-4">
+
+        <!-- Tarjeta Principal Hero: Resumen Mensual y Anual MXN -->
+        <div class="bg-gradient-to-br from-obsidian-800 via-obsidian-850 to-obsidian-800 border border-champagne-400/35 rounded-3xl p-4 shadow-gold-glow">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Gasto Mensual Estimado</span>
+            <span id="kpi-plan-limit-label" class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-champagne-400/15 text-champagne-400 border border-champagne-400/30">
+              Plan Gratis: 0/3
+            </span>
+          </div>
+
+          <div class="flex items-baseline gap-1.5 my-1">
+            <span id="kpi-monthly" class="text-3xl font-extrabold text-slate-50 tracking-tight">$0.00</span>
+            <span class="text-xs font-bold text-champagne-400">MXN / mes</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5 mt-3 pt-3 border-t border-slate-800/90">
+            <div class="bg-obsidian-900/70 rounded-2xl p-2.5">
+              <span class="text-[10px] text-slate-400 block">Proyección Anual</span>
+              <span id="kpi-annual" class="text-sm font-bold text-champagne-400">$0.00 MXN</span>
+            </div>
+            <div class="bg-obsidian-900/70 rounded-2xl p-2.5">
+              <span class="text-[10px] text-slate-400 block">Servicios Activos</span>
+              <span id="kpi-active-count" class="text-sm font-bold text-slate-100">0 registrados</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta Próximo Recordatorio Inminente -->
+        <div onclick="navigateTo('notificaciones')" class="bg-obsidian-800 border border-slate-800 active:border-champagne-400/60 rounded-2xl p-3.5 flex items-center justify-between gap-3 transition-all cursor-pointer">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-10 h-10 rounded-xl bg-champagne-400/15 text-champagne-400 flex items-center justify-center shrink-0">
+              <i data-lucide="bell-ring" class="w-5 h-5"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-semibold uppercase text-champagne-400">Próximo cobro</span>
+                <span id="kpi-next-badge" class="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-red-500/20 text-red-400">Pronto</span>
+              </div>
+              <p id="kpi-next-name" class="text-sm font-bold text-slate-50 truncate">Sin cobros próximos</p>
+              <p id="kpi-next-date" class="text-[11px] text-slate-400">—</p>
+            </div>
+          </div>
+          <div class="text-right shrink-0">
+            <span id="kpi-next-amount" class="text-sm font-bold text-slate-50 block">$0.00</span>
+            <span class="text-[10px] text-champagne-400 font-medium">Ver agenda →</span>
+          </div>
+        </div>
+
+        <!-- Bloque Analítico Apilado para Móvil: Tarjeta Marfil (Gráfico) + Categorías -->
+        <div id="dashboard-analytics-row" class="space-y-4">
+          <!-- Tarjeta Crema Marfil (#F5F3EE) -->
+          <div id="dashboard-chart-card" class="bg-ivory-100 text-obsidian-900 rounded-3xl p-4 shadow-lg border border-ivory-300">
+            <div class="flex items-center justify-between mb-2">
+              <div>
+                <h2 class="text-sm font-bold text-obsidian-900">Proyección Mensual (MXN)</h2>
+                <p class="text-[11px] text-slate-600">Evolución de pagos recurrentes</p>
+              </div>
+              <div class="flex items-center gap-2 text-[10px] font-semibold">
+                <span class="flex items-center gap-1 text-obsidian-800">
+                  <span class="w-2.5 h-2.5 rounded-sm bg-champagne-400 inline-block"></span> MXN
+                </span>
+                <span class="flex items-center gap-1 text-slate-600">
+                  <span class="w-2.5 h-2.5 rounded-full bg-obsidian-800 inline-block"></span> Tend.
+                </span>
+              </div>
+            </div>
+            <div class="w-full h-44 relative">
+              <canvas id="expensesChart" class="w-full h-full"></canvas>
+            </div>
+          </div>
+
+          <!-- Distribución por Categorías -->
+          <div id="dashboard-category-card" class="bg-obsidian-800 border border-slate-800/90 rounded-3xl p-4">
+            <div class="flex items-center justify-between mb-1">
+              <h2 class="text-sm font-bold text-slate-50">Distribución por Categoría</h2>
+              <span class="text-[11px] text-slate-400">MXN / mes</span>
+            </div>
+            <div id="category-segmented-bar" class="w-full h-2.5 rounded-full bg-obsidian-900 overflow-hidden flex gap-1 p-0.5 my-3"></div>
+            <div id="category-breakdown-list" class="space-y-2.5"></div>
+          </div>
+        </div>
+
+        <!-- Suscripciones Registradas -->
+        <div class="bg-obsidian-800 border border-slate-800/90 rounded-3xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h2 class="text-sm font-bold text-slate-50">Mis Suscripciones</h2>
+              <p class="text-[11px] text-slate-400">Toca para editar o revisar uso</p>
+            </div>
+            <button onclick="openSubscriptionModal()" class="px-3 py-1.5 rounded-xl bg-champagne-400 text-obsidian-950 font-bold text-xs flex items-center gap-1 active:scale-95">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Agregar</span>
+            </button>
+          </div>
+          <div id="dashboard-subs-list" class="space-y-2.5"></div>
+        </div>
+      </section>
+
+      <!-- ==================== VISTA 2: MIS SUSCRIPCIONES ==================== -->
+      <section id="view-suscripciones" class="view-section hidden space-y-3.5">
+        <div class="bg-obsidian-800 p-3.5 rounded-2xl border border-slate-800 space-y-2.5">
+          <div class="relative">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input type="text" id="filter-search" oninput="renderSubscriptionsList()" placeholder="Buscar Netflix, Spotify, Smart Fit..." class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-obsidian-900 border border-slate-700/80 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-champagne-400">
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <select id="filter-category" onchange="renderSubscriptionsList()" class="px-2.5 py-2 rounded-xl bg-obsidian-900 border border-slate-700/80 text-xs text-slate-200 focus:outline-none focus:border-champagne-400">
+              <option value="all">Categoría: Todas</option>
+              <option value="Video">Video</option>
+              <option value="Música">Música</option>
+              <option value="Videojuegos">Videojuegos</option>
+              <option value="Almacenamiento">Almacenamiento</option>
+              <option value="Educación">Educación</option>
+              <option value="Productividad">Productividad</option>
+              <option value="Noticias">Noticias</option>
+              <option value="Gimnasio/Membresía">Gimnasio</option>
+              <option value="Otra">Otra</option>
+            </select>
+            <select id="filter-usage" onchange="renderSubscriptionsList()" class="px-2.5 py-2 rounded-xl bg-obsidian-900 border border-slate-700/80 text-xs text-slate-200 focus:outline-none focus:border-champagne-400">
+              <option value="all">Uso: Todos</option>
+              <option value="activa">Uso habitual</option>
+              <option value="poco_utilizada">Poco utilizada</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="full-subs-grid" class="space-y-2.5"></div>
+      </section>
+
+      <!-- ==================== VISTA 3: RECORDATORIOS ==================== -->
+      <section id="view-notificaciones" class="view-section hidden space-y-4">
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <h2 class="text-base font-bold text-slate-50">Agenda de Cobros</h2>
+            <p class="text-[11px] text-slate-400">Avisos anticipados configurables</p>
+          </div>
+          <button onclick="advanceAllUpcoming()" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-champagne-400 to-champagne-500 text-obsidian-950 font-bold text-xs flex items-center gap-1.5 active:scale-95">
+            <i data-lucide="calendar-check-2" class="w-3.5 h-3.5"></i>
+            <span>Renovar ciclos</span>
+          </button>
+        </div>
+
+        <!-- Bloque Ético: Poco utilizados -->
+        <div id="low-usage-section" class="hidden bg-obsidian-800/90 border border-amber-500/40 rounded-2xl p-4 space-y-2.5">
+          <div class="flex items-start gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center shrink-0">
+              <i data-lucide="eye" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h3 class="text-xs font-bold text-slate-50">Servicios marcados como "Poco utilizados"</h3>
+              <p class="text-[11px] text-slate-400">Revisa sus condiciones de cancelación si decides darlos de baja.</p>
+            </div>
+          </div>
+          <div id="low-usage-list" class="space-y-2 pt-1"></div>
+        </div>
+
+        <div id="notifications-list" class="space-y-3"></div>
+      </section>
+
+      <!-- ==================== VISTA 4: GUÍAS DE CANCELACIÓN ==================== -->
+      <section id="view-guias" class="view-section hidden space-y-4">
+        <div class="bg-obsidian-800 border border-slate-800 rounded-2xl p-4 space-y-3">
+          <div>
+            <h2 class="text-base font-bold text-slate-50">Guías de Cancelación (México)</h2>
+            <p class="text-[11px] text-slate-400">Rutas verificadas para gestionar bajas directamente en cada plataforma</p>
+          </div>
+          <div class="relative">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input type="text" id="guide-search" oninput="renderGuides()" placeholder="Buscar Netflix, Prime, Apple, Smart Fit..." class="w-full pl-9 pr-3 py-2 rounded-xl bg-obsidian-900 border border-slate-700 text-xs text-slate-100 focus:outline-none focus:border-champagne-400">
+          </div>
+          <div class="p-3 rounded-xl bg-obsidian-900 border border-champagne-400/30 flex items-center justify-between gap-2">
+            <span class="text-[11px] text-slate-300">Consumo Responsable (ODS 12)</span>
+            <span id="audit-savings-badge" class="px-2 py-0.5 rounded-md bg-champagne-400/15 text-champagne-300 text-[10px] font-bold">
+              0 poco usados
+            </span>
+          </div>
+        </div>
+
+        <div id="guides-grid" class="space-y-3"></div>
+      </section>
+
+      <!-- ==================== VISTA 5: PLANES (MXN) ==================== -->
+      <section id="view-planes" class="view-section hidden space-y-4">
+        <div class="text-center px-2">
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-champagne-400/15 text-champagne-400 border border-champagne-400/30">
+            Pesos Mexicanos (MXN)
+          </span>
+          <h2 class="text-lg font-bold text-slate-50 mt-2">Elige tu Plan Suscript!</h2>
+          <p class="text-xs text-slate-400 mt-1">Activa Premium para desbloquear suscripciones ilimitadas y el editor visual de interfaz.</p>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Plan Premium Anual (Destacado primero en móvil) -->
+          <div class="bg-gradient-to-b from-obsidian-800 to-obsidian-850 border-2 border-champagne-400 rounded-3xl p-5 relative premium-card-glow">
+            <div class="inline-block px-2.5 py-0.5 rounded-full bg-champagne-400 text-obsidian-950 text-[10px] font-extrabold uppercase mb-2">
+              Ahorra 23.6% ($139 MXN)
+            </div>
+            <div class="flex items-baseline justify-between">
+              <h3 class="text-lg font-bold text-slate-50">Premium Anual</h3>
+              <div>
+                <span class="text-2xl font-extrabold text-champagne-400">$449</span>
+                <span class="text-xs text-slate-400"> MXN/año</span>
+              </div>
+            </div>
+            <p class="text-[11px] text-emerald-400 font-medium mt-0.5">Equivale a $37.41 MXN/mes (vs $588 MXN/año)</p>
+
+            <ul class="space-y-2 text-xs text-slate-200 my-4 pt-3 border-t border-slate-800">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-champagne-400 shrink-0"></i> <span><strong>Suscripciones ilimitadas</strong></span></li>
+              <li class="flex items-center gap-2"><i data-lucide="palette" class="w-4 h-4 text-champagne-400 shrink-0"></i> <span><strong>Editor completo de interfaz</strong> (temas y fuentes)</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-champagne-400 shrink-0"></i> <span>Alertas anticipadas personalizables</span></li>
+            </ul>
+
+            <button id="btn-plan-premium_anual" onclick="selectPlan('premium_anual')" class="w-full py-3 rounded-xl bg-gradient-to-r from-champagne-400 to-champagne-500 text-obsidian-950 font-bold text-xs shadow-gold-strong active:scale-95 transition-transform">
+              Seleccionar Plan Anual ($449 MXN)
+            </button>
+          </div>
+
+          <!-- Plan Premium Mensual -->
+          <div class="bg-obsidian-800 border border-champagne-400/50 rounded-3xl p-5">
+            <div class="flex items-baseline justify-between">
+              <h3 class="text-base font-bold text-slate-50">Premium Mensual</h3>
+              <div>
+                <span class="text-2xl font-extrabold text-champagne-400">$49</span>
+                <span class="text-xs text-slate-400"> MXN/mes</span>
+              </div>
+            </div>
+            <ul class="space-y-2 text-xs text-slate-300 my-3 pt-3 border-t border-slate-800">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-champagne-400 shrink-0"></i> <span><strong>Registro sin límite</strong> de suscripciones</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="palette" class="w-4 h-4 text-champagne-400 shrink-0"></i> <span><strong>Personalización visual</strong> de colores y fondo</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-champagne-400 shrink-0"></i> <span>Proyecciones anuales y auditoría ODS 12</span></li>
+            </ul>
+            <button id="btn-plan-premium_mensual" onclick="selectPlan('premium_mensual')" class="w-full py-2.5 rounded-xl bg-champagne-400/20 border border-champagne-400 text-champagne-300 font-bold text-xs active:scale-95 transition-transform">
+              Elegir Mensual ($49 MXN)
+            </button>
+          </div>
+
+          <!-- Plan Gratis -->
+          <div class="bg-obsidian-800 border border-slate-800 rounded-3xl p-5">
+            <div class="flex items-baseline justify-between">
+              <h3 class="text-base font-bold text-slate-100">Plan Gratis</h3>
+              <div>
+                <span class="text-2xl font-extrabold text-slate-50">$0</span>
+                <span class="text-xs text-slate-400"> MXN</span>
+              </div>
+            </div>
+            <ul class="space-y-2 text-xs text-slate-400 my-3 pt-3 border-t border-slate-800">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-champagne-400 shrink-0"></i> <span>Hasta <strong>3 suscripciones activas</strong></span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-champagne-400 shrink-0"></i> <span>Recordatorios y guías básicas</span></li>
+            </ul>
+            <button id="btn-plan-gratis" onclick="selectPlan('gratis')" class="w-full py-2.5 rounded-xl border border-slate-700 text-slate-300 font-semibold text-xs active:scale-95 transition-transform">
+              Plan Actual
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VISTA 6: PERSONALIZAR INTERFAZ (EXCLUSIVO PREMIUM) ==================== -->
+      <section id="view-personalizar" class="view-section hidden space-y-4">
+        <!-- Bloqueo Plan Gratis -->
+        <div id="customizer-free-lock" class="bg-obsidian-800 border-2 border-champagne-400/60 rounded-3xl p-5 shadow-gold-glow space-y-3">
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-champagne-400/15 border border-champagne-400/30 text-champagne-400 text-[10px] font-bold">
+            <i data-lucide="lock" class="w-3 h-3"></i>
+            <span>EXCLUSIVO SUSCRIPT! PREMIUM</span>
+          </div>
+          <h2 class="text-lg font-bold text-slate-50">Personaliza la interfaz de tu app</h2>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Activa <strong>Premium Mensual ($49 MXN)</strong> o <strong>Anual ($449 MXN)</strong> para cambiar colores de acento, temas oscuros, tipografía, bordes y módulos visibles en tu pantalla de inicio.
+          </p>
+          <button onclick="navigateTo('planes')" class="w-full py-3 rounded-xl bg-gradient-to-r from-champagne-400 to-champagne-500 text-obsidian-950 font-bold text-xs shadow-gold-strong flex items-center justify-center gap-1.5 active:scale-95">
+            <i data-lucide="gem" class="w-4 h-4"></i>
+            <span>Ir a Planes Premium</span>
+          </button>
+        </div>
+
+        <!-- Editor Visual Activo -->
+        <div id="customizer-workspace" class="space-y-4">
+          <div class="bg-obsidian-800 border border-slate-800 rounded-3xl p-4 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div>
+                <span class="text-[10px] font-bold text-emerald-400 uppercase">✦ Modo Premium Activo</span>
+                <h2 class="text-base font-bold text-slate-50">Editor Visual</h2>
+              </div>
+              <button onclick="resetCustomTheme()" class="px-3 py-1.5 rounded-xl bg-obsidian-900 border border-slate-700 text-slate-300 text-[11px] font-semibold flex items-center gap-1 active:scale-95">
+                <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
+                <span>Restaurar</span>
+              </button>
+            </div>
+
+            <!-- 1. Color de Acento -->
+            <div class="space-y-2">
+              <h3 class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-champagne-400"></i>
+                <span>Color de Acento</span>
+              </h3>
+              <div class="grid grid-cols-2 gap-2" id="accent-presets-grid"></div>
+            </div>
+
+            <!-- 2. Atmósfera de Fondo -->
+            <div class="space-y-2 pt-2 border-t border-slate-800">
+              <h3 class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                <i data-lucide="moon-star" class="w-3.5 h-3.5 text-champagne-400"></i>
+                <span>Tema de Fondo</span>
+              </h3>
+              <div class="grid grid-cols-2 gap-2" id="bg-presets-grid"></div>
+            </div>
+
+            <!-- 3. Tipografía, Bordes y Densidad -->
+            <div class="space-y-3 pt-2 border-t border-slate-800">
+              <h3 class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                <i data-lucide="type" class="w-3.5 h-3.5 text-champagne-400"></i>
+                <span>Tipografía y Estilo</span>
+              </h3>
+              <div class="grid grid-cols-3 gap-1.5" id="font-options-grid"></div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <span class="text-[10px] text-slate-400 block mb-1">Bordes</span>
+                  <div class="grid grid-cols-3 gap-1" id="radius-options-grid"></div>
+                </div>
+                <div>
+                  <span class="text-[10px] text-slate-400 block mb-1">Densidad</span>
+                  <div class="grid grid-cols-2 gap-1" id="density-options-grid"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. Módulos Visibles -->
+            <div class="space-y-2 pt-2 border-t border-slate-800">
+              <h3 class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                <i data-lucide="layout-template" class="w-3.5 h-3.5 text-champagne-400"></i>
+                <span>Módulos del Panel</span>
+              </h3>
+              <label class="flex items-center justify-between p-2.5 rounded-xl bg-obsidian-900 border border-slate-800 cursor-pointer">
+                <span class="text-xs text-slate-200">Banner de privacidad</span>
+                <input type="checkbox" id="widget-toggle-banner" onchange="updateWidgetVisibility()" class="w-4 h-4 accent-amber-400 rounded">
+              </label>
+              <label class="flex items-center justify-between p-2.5 rounded-xl bg-obsidian-900 border border-slate-800 cursor-pointer">
+                <span class="text-xs text-slate-200">Gráfico mensual (Tarjeta Marfil)</span>
+                <input type="checkbox" id="widget-toggle-chart" onchange="updateWidgetVisibility()" class="w-4 h-4 accent-amber-400 rounded">
+              </label>
+              <label class="flex items-center justify-between p-2.5 rounded-xl bg-obsidian-900 border border-slate-800 cursor-pointer">
+                <span class="text-xs text-slate-200">Distribución por categoría</span>
+                <input type="checkbox" id="widget-toggle-categories" onchange="updateWidgetVisibility()" class="w-4 h-4 accent-amber-400 rounded">
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VISTA 7: ACERCA DE SUSCRIPT! ==================== -->
+      <section id="view-acerca" class="view-section hidden space-y-4">
+        <div class="bg-obsidian-800 border border-slate-800 rounded-3xl p-5 space-y-4">
+          <div>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-champagne-400/15 text-champagne-400 border border-champagne-400/30">
+              Universidad Veracruzana • Campus Xalapa
+            </span>
+            <h2 class="text-lg font-bold text-slate-50 mt-2">Acerca de Suscript!</h2>
+            <p class="text-xs text-slate-400">Facultad de Contaduría y Administración • Sistemas Computacionales Administrativos</p>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-obsidian-900 border border-slate-800 space-y-1">
+            <p class="text-xs font-bold text-champagne-400 uppercase">Misión</p>
+            <p class="text-xs text-slate-300 leading-relaxed">Ayudar a las personas a administrar sus suscripciones de forma sencilla, transparente y segura para que tengan mayor control de sus gastos recurrentes.</p>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-obsidian-900 border border-slate-800 space-y-1">
+            <p class="text-xs font-bold text-champagne-400 uppercase">Visión</p>
+            <p class="text-xs text-slate-300 leading-relaxed">Convertirse en una herramienta de referencia en México para organizar suscripciones digitales y ampliar el servicio a América Latina.</p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-ivory-100 text-obsidian-900 border border-ivory-300 space-y-2">
+            <h3 class="font-bold text-xs uppercase tracking-wider">Alineación ODS 8 y ODS 12</h3>
+            <p class="text-xs text-slate-700"><strong>ODS 8:</strong> Emprendimiento tecnológico formal y ciberseguridad en México.</p>
+            <p class="text-xs text-slate-700"><strong>ODS 12:</strong> Consumo responsable e informado mediante la revisión periódica de servicios contratados.</p>
+          </div>
+
+          <button onclick="openProfileModal()" class="w-full py-3 rounded-xl bg-champagne-400 text-obsidian-950 font-bold text-xs">
+            Configurar Perfil y Privacidad
+          </button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ==================== BOTTOM TAB BAR NATIVO MÓVIL ==================== -->
+    <nav class="sticky bottom-0 inset-x-0 bg-obsidian-850/95 backdrop-blur-xl border-t border-slate-800/90 z-40 px-2 pt-1.5 safe-bottom flex items-center justify-around">
+      <button onclick="navigateTo('inicio')" data-nav="inicio" class="mobile-nav-btn flex flex-col items-center justify-center py-1 px-2 text-champagne-400 active:scale-90 transition-transform">
+        <i data-lucide="layout-dashboard" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px] font-semibold">Inicio</span>
+      </button>
+
+      <button onclick="navigateTo('suscripciones')" data-nav="suscripciones" class="mobile-nav-btn relative flex flex-col items-center justify-center py-1 px-2 text-slate-400 active:scale-90 transition-transform">
+        <i data-lucide="layers" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px] font-medium">Servicios</span>
+        <span id="nav-sub-count" class="absolute top-0 right-1 text-[9px] px-1 rounded-full bg-obsidian-900 text-champagne-400 font-bold border border-slate-700">0</span>
+      </button>
+
+      <!-- Botón Central Flotante (+) -->
+      <button onclick="openSubscriptionModal()" aria-label="Registrar Suscripción" class="-mt-6 w-14 h-14 rounded-2xl bg-gradient-to-br from-champagne-300 to-champagne-500 text-obsidian-950 shadow-gold-strong flex items-center justify-center font-bold border-4 border-obsidian-900 active:scale-90 transition-transform">
+        <i data-lucide="plus" class="w-6 h-6"></i>
+      </button>
+
+      <button onclick="navigateTo('notificaciones')" data-nav="notificaciones" class="mobile-nav-btn relative flex flex-col items-center justify-center py-1 px-2 text-slate-400 active:scale-90 transition-transform">
+        <i data-lucide="bell" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px] font-medium">Avisos</span>
+        <span id="nav-notif-badge" class="absolute top-0 right-1 text-[9px] px-1 rounded-full bg-red-500 text-white font-bold">0</span>
+      </button>
+
+      <button onclick="navigateTo('guias')" data-nav="guias" class="mobile-nav-btn flex flex-col items-center justify-center py-1 px-2 text-slate-400 active:scale-90 transition-transform">
+        <i data-lucide="book-open-check" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px] font-medium">Guías</span>
+      </button>
+    </nav>
+
+    <!-- Elementos ocultos de compatibilidad con IDs de escritorio -->
+    <div class="hidden">
+      <span id="sidebar-plan-badge"></span>
+      <span id="desktop-notif-dot"></span>
+      <span id="header-user-name"></span>
+      <span id="header-plan-status"></span>
+    </div>
+  </div>
+
+  <!-- ==================== BOTTOM SHEET 1 (MARFIL): AGREGAR / EDITAR SUSCRIPCIÓN ==================== -->
+  <div id="subscription-modal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center bg-black/75 backdrop-blur-sm">
+    <div class="bg-ivory-100 text-obsidian-900 w-full max-w-[440px] rounded-t-3xl sm:rounded-3xl shadow-2xl border-t sm:border border-ivory-300 overflow-hidden bottom-sheet-enter">
+      
+      <!-- Handle táctil móvil -->
+      <div class="bg-obsidian-900 pt-2 pb-1 flex justify-center sm:hidden">
+        <div class="w-10 h-1 rounded-full bg-slate-600"></div>
+      </div>
+
+      <div class="bg-obsidian-900 text-slate-50 px-5 py-3.5 flex items-center justify-between">
+        <button onclick="closeSubscriptionModal()" class="text-slate-300 hover:text-champagne-400 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <h3 id="modal-title" class="font-bold text-sm tracking-wide">Registrar Suscripción</h3>
+        <div class="w-6"></div>
+      </div>
+
+      <form id="subscription-form" onsubmit="handleSaveSubscription(event)" class="p-5 space-y-3.5 max-h-[82vh] overflow-y-auto safe-bottom">
+        <input type="hidden" id="sub-id" />
+
+        <!-- Chips rápidos México -->
+        <div>
+          <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Servicios populares en México (MXN)</label>
+          <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+            <button type="button" onclick="quickFillService('Netflix Estándar', 219, 'Video')" class="px-3 py-1.5 rounded-xl bg-ivory-200 active:bg-champagne-400/30 text-obsidian-900 text-xs font-semibold shrink-0">
+              Netflix ($219)
+            </button>
+            <button type="button" onclick="quickFillService('Spotify Individual', 129, 'Música')" class="px-3 py-1.5 rounded-xl bg-ivory-200 active:bg-champagne-400/30 text-obsidian-900 text-xs font-semibold shrink-0">
+              Spotify ($129)
+            </button>
+            <button type="button" onclick="quickFillService('iCloud+ 200GB', 49, 'Almacenamiento')" class="px-3 py-1.5 rounded-xl bg-ivory-200 active:bg-champagne-400/30 text-obsidian-900 text-xs font-semibold shrink-0">
+              iCloud+ ($49)
+            </button>
+            <button type="button" onclick="quickFillService('Amazon Prime', 99, 'Video')" class="px-3 py-1.5 rounded-xl bg-ivory-200 active:bg-champagne-400/30 text-obsidian-900 text-xs font-semibold shrink-0">
+              Prime ($99)
+            </button>
+            <button type="button" onclick="quickFillService('Smart Fit', 599, 'Gimnasio/Membresía')" class="px-3 py-1.5 rounded-xl bg-ivory-200 active:bg-champagne-400/30 text-obsidian-900 text-xs font-semibold shrink-0">
+              Smart Fit ($599)
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre del servicio</label>
+          <input type="text" id="sub-name" required placeholder="Ej. Netflix, Spotify, ChatGPT Plus..." class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-ivory-300 text-obsidian-900 font-medium text-sm focus:outline-none focus:border-champagne-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Costo ($ MXN)</label>
+            <input type="number" id="sub-cost" step="0.01" min="1" required placeholder="219.00" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-ivory-300 text-obsidian-900 font-bold text-sm focus:outline-none focus:border-champagne-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Categoría</label>
+            <select id="sub-category" class="w-full px-3 py-2.5 rounded-xl bg-white border border-ivory-300 text-obsidian-900 font-medium text-sm focus:outline-none focus:border-champagne-500">
+              <option value="Video">Video</option>
+              <option value="Música">Música</option>
+              <option value="Videojuegos">Videojuegos</option>
+              <option value="Almacenamiento">Almacenamiento</option>
+              <option value="Educación">Educación</option>
+              <option value="Productividad">Productividad</option>
+              <option value="Noticias">Noticias</option>
+              <option value="Gimnasio/Membresía">Gimnasio/Membresía</option>
+              <option value="Otra">Otra</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1.5">Frecuencia de Pago</label>
+          <input type="hidden" id="sub-frequency" value="Mensual">
+          <div class="grid grid-cols-2 gap-2" id="frequency-buttons">
+            <button type="button" onclick="selectFrequency('Mensual')" data-freq="Mensual" class="freq-btn py-2 px-3 rounded-xl text-xs font-semibold border transition-all bg-champagne-400 text-white border-champagne-500">Mensual</button>
+            <button type="button" onclick="selectFrequency('Trimestral')" data-freq="Trimestral" class="freq-btn py-2 px-3 rounded-xl text-xs font-semibold border transition-all bg-white text-obsidian-800 border-ivory-300">Trimestral</button>
+            <button type="button" onclick="selectFrequency('Semestral')" data-freq="Semestral" class="freq-btn py-2 px-3 rounded-xl text-xs font-semibold border transition-all bg-white text-obsidian-800 border-ivory-300">Semestral</button>
+            <button type="button" onclick="selectFrequency('Anual')" data-freq="Anual" class="freq-btn py-2 px-3 rounded-xl text-xs font-semibold border transition-all bg-white text-obsidian-800 border-ivory-300">Anual</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Próximo cobro</label>
+            <input type="date" id="sub-date" required class="w-full px-3 py-2.5 rounded-xl bg-white border border-ivory-300 text-obsidian-900 font-medium text-xs focus:outline-none focus:border-champagne-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Anticipación aviso</label>
+            <select id="sub-lead-days" class="w-full px-3 py-2.5 rounded-xl bg-white border border-ivory-300 text-obsidian-900 font-medium text-xs focus:outline-none focus:border-champagne-500">
+              <option value="1">1 día antes</option>
+              <option value="3" selected>3 días antes</option>
+              <option value="5">5 días antes</option>
+              <option value="7">7 días antes</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-2xl bg-white border border-ivory-300">
+          <label class="block text-xs font-bold text-obsidian-900 mb-1">¿Lo sigues utilizando regularmente?</label>
+          <select id="sub-usage" class="w-full px-3 py-2 rounded-xl bg-ivory-50 border border-ivory-300 text-obsidian-900 text-xs font-medium focus:outline-none focus:border-champagne-500">
+            <option value="activa">Sí, lo utilizo con frecuencia (Activa)</option>
+            <option value="poco_utilizada">Casi no lo utilizo (Marcar para revisar)</option>
+          </select>
+        </div>
+
+        <button type="submit" id="modal-submit-btn" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-champagne-400 to-champagne-500 text-white font-bold text-sm shadow-lg active:scale-[0.98] transition-all">
+          Guardar Suscripción
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== BOTTOM SHEET 2: LÍMITE PLAN GRATIS ==================== -->
+  <div id="limit-modal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm">
+    <div class="bg-obsidian-850 border-t-2 sm:border-2 border-champagne-400 text-slate-50 w-full max-w-[440px] rounded-t-3xl sm:rounded-3xl p-5 shadow-gold-strong bottom-sheet-enter safe-bottom">
+      <div class="w-10 h-1 rounded-full bg-slate-600 mx-auto mb-4 sm:hidden"></div>
+      <div class="w-11 h-11 rounded-2xl bg-champagne-400/15 text-champagne-400 flex items-center justify-center mb-3">
+        <i data-lucide="gem" class="w-6 h-6"></i>
+      </div>
+      <h3 class="text-lg font-bold text-slate-50">Límite del Plan Gratis alcanzado</h3>
+      <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+        El <strong>Plan Gratis ($0 MXN)</strong> permite hasta <strong>3 suscripciones activas</strong>. Actualiza a Premium para registrar servicios ilimitados y personalizar tu interfaz.
+      </p>
+      <div class="mt-3 p-3 rounded-2xl bg-obsidian-900 border border-slate-800 text-xs text-slate-300 space-y-1">
+        <p>• <strong>Premium Mensual:</strong> $49 MXN/mes</p>
+        <p>• <strong>Premium Anual:</strong> $449 MXN/año (Ahorra 23.6%)</p>
+      </div>
+      <div class="mt-4 flex flex-col gap-2">
+        <button onclick="closeLimitModal(); navigateTo('planes');" class="w-full py-3 rounded-xl bg-gradient-to-r from-champagne-400 to-champagne-500 text-obsidian-950 font-bold text-xs text-center">
+          Ver Planes Premium
+        </button>
+        <button onclick="closeLimitModal()" class="w-full py-2.5 rounded-xl bg-obsidian-800 border border-slate-700 text-slate-300 text-xs font-medium">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== BOTTOM SHEET 3: PERFIL DE USUARIO ==================== -->
+  <div id="profile-modal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm">
+    <div class="bg-ivory-100 text-obsidian-900 w-full max-w-[440px] rounded-t-3xl sm:rounded-3xl shadow-2xl border-t sm:border border-ivory-300 overflow-hidden bottom-sheet-enter">
+      <div class="bg-obsidian-900 pt-2 pb-1 flex justify-center sm:hidden">
+        <div class="w-10 h-1 rounded-full bg-slate-600"></div>
+      </div>
+      <div class="bg-obsidian-900 text-slate-50 px-5 py-3.5 flex items-center justify-between">
+        <div>
+          <h3 class="font-bold text-sm">Perfil y Privacidad</h3>
+          <p class="text-[10px] text-champagne-400">Sin datos bancarios • Control total</p>
+        </div>
+        <button onclick="closeProfileModal()" class="text-slate-300 hover:text-champagne-400 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="user-profile-form" onsubmit="handleSaveUserProfile(event)" class="p-5 space-y-3.5 max-h-[82vh] overflow-y-auto safe-bottom">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre o alias <span class="text-slate-400 font-normal">(opcional)</span></label>
+          <input type="text" id="prof-name" placeholder="Ej. Alex M." class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-ivory-300 text-sm text-obsidian-900 focus:outline-none focus:border-champagne-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Correo electrónico *</label>
+          <input type="email" id="prof-email" required placeholder="usuario@correo.com" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-ivory-300 text-sm text-obsidian-900 focus:outline-none focus:border-champagne-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Rango de edad</label>
+            <select id="prof-age" class="w-full px-3 py-2.5 rounded-xl bg-white border border-ivory-300 text-xs text-obsidian-900 focus:outline-none focus:border-champagne-500">
+              <option value="18–24">18–24 años</option>
+              <option value="25–34">25–34 años</option>
+              <option value="35–44">35–44 años</option>
+              <option value="45–54">45–54 años</option>
+              <option value="55 o más">55 o más</option>
+              <option value="prefiero no decir">Prefiero no decir</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Plan de interés</label>
+            <select id="prof-plan-interest" class="w-full px-3 py-2.5 rounded-xl bg-white border border-ivory-300 text-xs text-obsidian-900 focus:outline-none focus:border-champagne-500">
+              <option value="Gratis">Gratis ($0 MXN)</option>
+              <option value="Premium mensual">Premium ($49/mes)</option>
+              <option value="Premium anual">Premium ($449/año)</option>
+              <option value="todavía no sé">Todavía no sé</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Objetivo principal</label>
+          <select id="prof-goal" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-ivory-300 text-xs text-obsidian-900 focus:outline-none focus:border-champagne-500">
+            <option value="Recordatorios">Recibir recordatorios antes de los cobros</option>
+            <option value="conocer el gasto">Conocer el gasto mensual y anual</option>
+            <option value="reducir servicios no usados">Reducir servicios que ya no utilizo</option>
+            <option value="organizar pagos">Organizar todas mis fechas de pago</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+
+        <div class="p-3 rounded-2xl bg-white border border-ivory-300 text-[11px] text-slate-600">
+          <p class="font-bold text-obsidian-900 mb-0.5">Aviso de Privacidad Transparente</p>
+          <p>No solicitamos tarjetas ni cuentas bancarias, y jamás vendemos tus datos personales.</p>
+        </div>
+
+        <label class="flex items-start gap-2 cursor-pointer">
+          <input type="checkbox" id="prof-consent" required class="w-4 h-4 mt-0.5 accent-champagne-600 rounded">
+          <span class="text-[11px] text-obsidian-900 font-medium">
+            Acepto el Aviso de Privacidad y el uso transparente de mis datos en Suscript!.
+          </span>
+        </label>
+
+        <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-champagne-400 to-champagne-500 text-white font-bold text-sm shadow-lg">
+          Guardar Perfil
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== BOTTOM SHEET 4: INSTALAR EN CELULAR (iOS / ANDROID) ==================== -->
+  <div id="install-modal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm">
+    <div class="bg-obsidian-850 border-t-2 sm:border-2 border-champagne-400 text-slate-50 w-full max-w-[440px] rounded-t-3xl sm:rounded-3xl p-5 shadow-gold-strong bottom-sheet-enter safe-bottom space-y-4">
+      <div class="w-10 h-1 rounded-full bg-slate-600 mx-auto sm:hidden"></div>
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-champagne-400/15 text-champagne-400 flex items-center justify-center">
+            <i data-lucide="smartphone" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-50">Instalar Suscript! en tu celular</h3>
+            <p class="text-[11px] text-champagne-400">App nativa sin ocupar espacio extra (PWA)</p>
+          </div>
+        </div>
+        <button onclick="closeInstallGuideModal()" class="text-slate-400 hover:text-slate-200 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-2.5 text-xs text-slate-300">
+        <div class="p-3 rounded-2xl bg-obsidian-900 border border-slate-800 space-y-1">
+          <p class="font-bold text-slate-100">En Android (Google Chrome):</p>
+          <p class="text-slate-400">1. Abre la app en Chrome → toca los <strong>3 puntos (⋮)</strong> arriba a la derecha.</p>
+          <p class="text-slate-400">2. Selecciona <strong>"Instalar aplicación"</strong> o <strong>"Agregar a pantalla principal"</strong>.</p>
+        </div>
+        <div class="p-3 rounded-2xl bg-obsidian-900 border border-slate-800 space-y-1">
+          <p class="font-bold text-slate-100">En iPhone / iPad (Safari):</p>
+          <p class="text-slate-400">1. Abre la app en Safari → toca el botón <strong>Compartir (□↑)</strong> abajo.</p>
+          <p class="text-slate-400">2. Elige <strong>"Agregar a inicio"</strong> y pulsa <strong>"Agregar"</strong>.</p>
+        </div>
+      </div>
+
+      <button onclick="closeInstallGuideModal()" class="w-full py-3 rounded-xl bg-champagne-400 text-obsidian-950 font-bold text-xs">
+        Entendido
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Móvil centrado arriba -->
+  <div id="toast-container" class="fixed top-16 inset-x-4 z-50 flex flex-col items-center gap-2 pointer-events-none"></div>
+
+<script>
+    const STORAGE_KEY = 'suscript_mx_uv_v1';
+    const FREE_PLAN_LIMIT = 3;
+
+    // Categorías oficiales (Sección 12 pregunta 4)
+    const CATEGORY_META = {
+      'Video': { color: '#38BDF8', bg: 'bg-sky-500/15', text: 'text-sky-400', icon: 'tv' },
+      'Música': { color: '#F87171', bg: 'bg-rose-500/15', text: 'text-rose-400', icon: 'music' },
+      'Videojuegos': { color: '#C084FC', bg: 'bg-purple-500/15', text: 'text-purple-400', icon: 'gamepad-2' },
+      'Almacenamiento': { color: '#34D399', bg: 'bg-emerald-500/15', text: 'text-emerald-400', icon: 'cloud' },
+      'Educación': { color: '#60A5FA', bg: 'bg-blue-500/15', text: 'text-blue-400', icon: 'graduation-cap' },
+      'Productividad': { color: '#FBBF24', bg: 'bg-amber-500/15', text: 'text-amber-400', icon: 'briefcase' },
+      'Noticias': { color: '#FB923C', bg: 'bg-orange-500/15', text: 'text-orange-400', icon: 'newspaper' },
+      'Gimnasio/Membresía': { color: '#F472B6', bg: 'bg-pink-500/15', text: 'text-pink-400', icon: 'dumbbell' },
+      'Otra': { color: '#94A3B8', bg: 'bg-slate-500/15', text: 'text-slate-400', icon: 'package' }
+    };
+
+    // Guías prácticas de cancelación y revisión en México (Sección 2 y 3)
+    const CANCELLATION_GUIDES = [
+      {
+        platform: 'Netflix México',
+        category: 'Video',
+        cycleNote: 'Se factura por adelantado cada mes. Conservas acceso hasta el final del periodo pagado.',
+        steps: [
+          'Inicia sesión desde un navegador web en netflix.com/account.',
+          'En la sección "Membresía y facturación", selecciona "Cancelar membresía".',
+          'Confirma en "Completar cancelación" y guarda el correo de confirmación.'
+        ],
+        url: 'https://www.netflix.com/cancelplan'
+      },
+      {
+        platform: 'Spotify México',
+        category: 'Música',
+        cycleNote: 'Al cancelar pasas automáticamente al plan gratuito sin perder tus listas de reproducción.',
+        steps: [
+          'Ingresa a spotify.com/mx/account desde tu navegador (no desde la app móvil).',
+          'Dirígete a "Tu plan" → "Cambiar de plan" → "Cancelar Premium".',
+          'Sigue las pantallas hasta ver el mensaje de confirmación de cambio a Spotify Free.'
+        ],
+        url: 'https://www.spotify.com/mx/account/'
+      },
+      {
+        platform: 'Amazon Prime México',
+        category: 'Video',
+        cycleNote: 'Incluye Prime Video y envíos. Puedes activar recordatorio de finalización 3 días antes.',
+        steps: [
+          'Entra a amazon.com.mx → "Cuenta y listas" → "Membresía Prime".',
+          'Haz clic en "Administrar membresía" → "Actualizar, cancelar y más".',
+          'Selecciona "Terminar membresía" y confirma en el último paso.'
+        ],
+        url: 'https://www.amazon.com.mx/mc'
+      },
+      {
+        platform: 'Apple / iCloud+ y App Store',
+        category: 'Almacenamiento',
+        cycleNote: 'Antes de reducir almacenamiento iCloud+, respalda tus fotos o archivos excedentes.',
+        steps: [
+          'En iPhone/iPad abre "Configuración" → toca tu nombre → "Suscripciones".',
+          'Selecciona el servicio activo (iCloud+, Apple TV+, apps) y pulsa "Cancelar suscripción".',
+          'En Mac: App Store → Tu perfil → Configuración de la cuenta → Suscripciones.'
+        ],
+        url: 'https://support.apple.com/es-mx/118428'
+      },
+      {
+        platform: 'Disney+ México',
+        category: 'Video',
+        cycleNote: 'Si contrataste mediante Mercado Libre (Meli+) o proveedor de TV, la baja se gestiona ahí.',
+        steps: [
+          'Accede a disneyplus.com desde navegador e inicia sesión en tu perfil principal.',
+          'Selecciona tu avatar → "Cuenta" → sección "Suscripción".',
+          'Elige tu plan activo y haz clic en "Cancelar suscripción".'
+        ],
+        url: 'https://www.disneyplus.com/account'
+      },
+      {
+        platform: 'Gimnasios (Smart Fit / Membresías)',
+        category: 'Gimnasio/Membresía',
+        cycleNote: 'Revisa la cláusula de anticipación (usualmente 15 a 30 días antes de la fecha de corte) y anualidad.',
+        steps: [
+          'Consulta tu contrato o portal de socios ("Espacio del Cliente") para verificar plazos mínimos.',
+          'Solicita la cancelación presencialmente en recepción o mediante el canal oficial indicado.',
+          'Exige siempre un folio o comprobante escrito de baja para evitar cargos posteriores.'
+        ],
+        url: 'https://www.smartfit.com.mx/'
+      }
+    ];
+function getDefaultState() {
+      const today = new Date();
+      const addDays = (days) => {
+        const d = new Date(today);
+        d.setDate(d.getDate() + days);
+        return d.toISOString().split('T')[0];
+      };
+
+      return {
+        plan: 'gratis', // 'gratis' | 'premium_mensual' | 'premium_anual'
+        profile: {
+          name: '',
+          email: '',
+          ageRange: '18–24',
+          planInterest: 'Gratis',
+          goal: 'Recordatorios',
+          consent: false
+        },
+        subscriptions: [
+          {
+            id: 'sub-mx-1',
+            name: 'Netflix Estándar',
+            cost: 219.00,
+            category: 'Video',
+            frequency: 'Mensual',
+            nextDate: addDays(2),
+            leadDays: 3,
+            usage: 'activa'
+          },
+          {
+            id: 'sub-mx-2',
+            name: 'Spotify Individual',
+            cost: 129.00,
+            category: 'Música',
+            frequency: 'Mensual',
+            nextDate: addDays(8),
+            leadDays: 3,
+            usage: 'activa'
+          },
+          {
+            id: 'sub-mx-3',
+            name: 'iCloud+ 200GB',
+            cost: 49.00,
+            category: 'Almacenamiento',
+            frequency: 'Mensual',
+            nextDate: addDays(14),
+            leadDays: 3,
+            usage: 'poco_utilizada'
+          }
+        ],
+        uiSettings: {
+          accent: 'champagne',
+          bgTheme: 'obsidian',
+          font: 'Inter',
+          radius: 'rounded',
+          density: 'comfortable',
+          showBanner: true,
+          showChart: true,
+          showCategories: true
+        }
+      };
+    }
+
+    let appState = loadState();
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && Array.isArray(parsed.subscriptions)) return parsed;
+        }
+      } catch (e) {
+        console.error('Error cargando estado:', e);
+      }
+      const def = getDefaultState();
+      saveState(def);
+      return def;
+    }
+
+    function saveState(state = appState) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.error('Error guardando estado:', e);
+      }
+    }
+
+    // ---------- UTILIDADES DE CÁLCULO ----------
+    function getMonthlyEquivalent(sub) {
+      const cost = parseFloat(sub.cost) || 0;
+      switch (sub.frequency) {
+        case 'Trimestral': return cost / 3;
+        case 'Semestral': return cost / 6;
+        case 'Anual': return cost / 12;
+        default: return cost;
+      }
+    }
+
+    function getAnnualEquivalent(sub) {
+      return getMonthlyEquivalent(sub) * 12;
+    }
+
+    function formatMXN(val) {
+      return '$' + Number(val || 0).toLocaleString('es-MX', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function getDaysUntil(dateStr) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const target = new Date(dateStr + 'T00:00:00');
+      return Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+    }
+
+    function formatSpanishDate(dateStr) {
+      const months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+      const d = new Date(dateStr + 'T00:00:00');
+      if (isNaN(d.getTime())) return dateStr;
+      return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
+    function isPremiumPlan() {
+      return appState.plan === 'premium_mensual' || appState.plan === 'premium_anual';
+    }
+
+    // ---------- NAVEGACIÓN ----------
+    const VIEW_TITLES = {
+      inicio: ['Panel de Control de Suscripciones', 'Registro manual transparente y seguro en Pesos Mexicanos (MXN)'],
+      suscripciones: ['Mis Suscripciones', 'Organiza servicios, ciclos de cobro y estado de uso habitual'],
+      notificaciones: ['Recordatorios de Cobro', 'Alertas configurables antes de cada renovación y auditoría consciente'],
+      guias: ['Guías de Cancelación y Condiciones', 'Pasos de referencia para gestionar bajas directamente en cada servicio'],
+      planes: ['Planes y Precios (MXN)', 'Opciones transparentes adaptadas al mercado mexicano'],
+      personalizar: ['Personalizar Interfaz', 'Ajusta colores, atmósfera, tipografía y módulos visuales (Exclusivo Premium)'],
+      acerca: ['Acerca de Suscript!', 'Misión, Visión, Valores y alineación con ODS 8 y ODS 12']
+    };
+
+    function navigateTo(viewId) {
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.add('hidden'));
+      const target = document.getElementById(`view-${viewId}`);
+      if (target) target.classList.remove('hidden');
+
+      if (VIEW_TITLES[viewId]) {
+        document.getElementById('page-title').textContent = VIEW_TITLES[viewId][0];
+        document.getElementById('page-subtitle').textContent = VIEW_TITLES[viewId][1];
+      }
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        const active = btn.dataset.nav === viewId;
+        btn.className = active
+          ? 'nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all bg-obsidian-800 text-champagne-400 border-l-4 border-champagne-400'
+          : 'nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-100 hover:bg-obsidian-800/60 transition-all';
+      });
+
+      document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+        const active = btn.dataset.nav === viewId;
+        btn.className = active
+          ? 'mobile-nav-btn relative flex flex-col items-center justify-center py-1 px-2 text-champagne-400 active:scale-90 transition-transform'
+          : 'mobile-nav-btn relative flex flex-col items-center justify-center py-1 px-2 text-slate-400 active:scale-90 transition-transform';
+      });
+
+      if (viewId === 'inicio') setTimeout(drawExpensesChart, 30);
+      lucide.createIcons();
+    }
+
+    // ---------- RENDERIZADO GENERAL ----------
+    function renderAll() {
+      updatePlanAndProfileUI();
+      applyCustomTheme();
+      renderCustomizerUI();
+      updateKPIs();
+      renderCategoryBreakdown();
+      renderDashboardSubscriptions();
+      renderSubscriptionsList();
+      renderNotifications();
+      renderGuides();
+      drawExpensesChart();
+      lucide.createIcons();
+    }
+
+    function updatePlanAndProfileUI() {
+      const count = appState.subscriptions.length;
+      const premium = isPremiumPlan();
+
+      const planLabel = appState.plan === 'premium_anual'
+        ? '✦ Premium Anual'
+        : appState.plan === 'premium_mensual'
+          ? '✦ Premium Mensual'
+          : `Plan Gratis (${count}/${FREE_PLAN_LIMIT})`;
+
+      document.getElementById('sidebar-plan-badge').textContent = planLabel;
+      document.getElementById('mobile-plan-label').textContent = planLabel;
+      document.getElementById('kpi-plan-limit-label').textContent = premium ? 'Suscripciones ilimitadas' : `Plan Gratis: ${count}/${FREE_PLAN_LIMIT}`;
+
+      // Perfil de usuario
+      const p = appState.profile || {};
+      const displayName = p.name ? p.name : (p.email ? p.email.split('@')[0] : 'Invitado Suscript!');
+      document.getElementById('header-user-name').textContent = displayName;
+      document.getElementById('header-avatar').textContent = displayName.slice(0, 2).toUpperCase();
+      document.getElementById('header-plan-status').textContent = p.consent
+        ? `${planLabel} • Privacidad verificada`
+        : 'Completar registro →';
+
+      const bannerCta = document.getElementById('banner-register-cta');
+      bannerCta.textContent = p.consent ? `Perfil activo: ${displayName} ✓` : 'Completar registro y consentimiento →';
+
+      // Botones de planes
+      ['gratis', 'premium_mensual', 'premium_anual'].forEach(planKey => {
+        const btn = document.getElementById(`btn-plan-${planKey}`);
+        if (!btn) return;
+        if (appState.plan === planKey) {
+          btn.textContent = '✓ Plan Seleccionado';
+        } else {
+          btn.textContent = planKey === 'gratis'
+            ? 'Cambiar a Plan Gratis'
+            : planKey === 'premium_mensual'
+              ? 'Elegir Mensual ($49 MXN)'
+              : 'Seleccionar Plan Anual ($449 MXN)';
+        }
+      });
+    }
+
+    function updateKPIs() {
+      const subs = appState.subscriptions;
+      const totalMonthly = subs.reduce((acc, s) => acc + getMonthlyEquivalent(s), 0);
+      const totalAnnual = totalMonthly * 12;
+
+      document.getElementById('kpi-monthly').textContent = formatMXN(totalMonthly);
+      document.getElementById('kpi-annual').textContent = formatMXN(totalAnnual);
+      document.getElementById('kpi-active-count').textContent = `${subs.length} servicio${subs.length === 1 ? '' : 's'} registrado${subs.length === 1 ? '' : 's'}`;
+      document.getElementById('nav-sub-count').textContent = subs.length;
+
+      if (subs.length > 0) {
+        const sorted = [...subs].sort((a, b) => new Date(a.nextDate) - new Date(b.nextDate));
+        const next = sorted[0];
+        const days = getDaysUntil(next.nextDate);
+        document.getElementById('kpi-next-name').textContent = next.name;
+        document.getElementById('kpi-next-amount').textContent = `${formatMXN(next.cost)} MXN`;
+        document.getElementById('kpi-next-date').textContent = `Cobro: ${formatSpanishDate(next.nextDate)}`;
+
+        const badge = document.getElementById('kpi-next-badge');
+        badge.textContent = days <= 0 ? 'Vence hoy' : `En ${days} día${days === 1 ? '' : 's'}`;
+        badge.className = days <= (next.leadDays || 3)
+          ? 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-red-500/20 text-red-400 border border-red-500/30'
+          : 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-champagne-400/20 text-champagne-300 border border-champagne-400/30';
+      } else {
+        document.getElementById('kpi-next-name').textContent = 'Sin cobros registrados';
+        document.getElementById('kpi-next-amount').textContent = '$0.00 MXN';
+        document.getElementById('kpi-next-date').textContent = 'Registra tu primer servicio';
+      }
+
+      const upcomingCount = subs.filter(s => getDaysUntil(s.nextDate) <= (s.leadDays || 3)).length;
+      document.getElementById('nav-notif-badge').textContent = upcomingCount;
+      const dot = document.getElementById('desktop-notif-dot');
+      if (dot) dot.classList.toggle('hidden', upcomingCount === 0);
+    }
+
+    function renderCategoryBreakdown() {
+      const subs = appState.subscriptions;
+      const totalMonthly = subs.reduce((acc, s) => acc + getMonthlyEquivalent(s), 0);
+      const totals = {};
+
+      subs.forEach(s => {
+        const cat = CATEGORY_META[s.category] ? s.category : 'Otra';
+        totals[cat] = (totals[cat] || 0) + getMonthlyEquivalent(s);
+      });
+
+      const barEl = document.getElementById('category-segmented-bar');
+      const listEl = document.getElementById('category-breakdown-list');
+      barEl.innerHTML = '';
+      listEl.innerHTML = '';
+
+      if (totalMonthly === 0) {
+        listEl.innerHTML = '<p class="text-xs text-slate-400 text-center py-4">Aún no hay gastos registrados.</p>';
+        return;
+      }
+
+      Object.entries(totals).sort((a, b) => b[1] - a[1]).forEach(([cat, amount]) => {
+        const meta = CATEGORY_META[cat];
+        const pct = Math.max(5, Math.round((amount / totalMonthly) * 100));
+
+        const seg = document.createElement('div');
+        seg.style.width = `${pct}%`;
+        seg.style.backgroundColor = meta.color;
+        seg.className = 'h-full rounded-full transition-all duration-500';
+        barEl.appendChild(seg);
+
+        const row = document.createElement('div');
+        row.className = 'flex items-center justify-between text-sm';
+        row.innerHTML = `
+          <div class="flex items-center gap-2.5">
+            <span class="w-7 h-7 rounded-lg ${meta.bg} ${meta.text} flex items-center justify-center">
+              <i data-lucide="${meta.icon}" class="w-3.5 h-3.5"></i>
+            </span>
+            <span class="text-slate-200 font-medium">${cat}</span>
+            <span class="text-[11px] text-slate-500">(${pct}%)</span>
+          </div>
+          <span class="font-semibold text-slate-100">${formatMXN(amount)} MXN</span>
+        `;
+        listEl.appendChild(row);
+      });
+    }
+
+    function createSubscriptionCardHTML(sub) {
+      const meta = CATEGORY_META[sub.category] || CATEGORY_META['Otra'];
+      const annual = getAnnualEquivalent(sub);
+      const days = getDaysUntil(sub.nextDate);
+      const isLowUsage = sub.usage === 'poco_utilizada';
+
+      return `
+        <div class="bg-obsidian-850/95 hover:bg-obsidian-850 border ${isLowUsage ? 'border-amber-500/40' : 'border-slate-800 hover:border-champagne-400/40'} rounded-2xl p-4 flex items-center justify-between gap-3 transition-all">
+          <div class="flex items-center gap-3.5 min-w-0">
+            <div class="w-11 h-11 rounded-xl ${meta.bg} ${meta.text} flex items-center justify-center shrink-0">
+              <i data-lucide="${meta.icon}" class="w-5 h-5"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <h4 class="font-semibold text-slate-100 text-sm sm:text-base truncate">${sub.name}</h4>
+                ${isLowUsage ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 shrink-0">Poco utilizada</span>' : ''}
+              </div>
+              <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-slate-400 mt-0.5">
+                <span>${sub.category}</span>
+                <span>•</span>
+                <span>${sub.frequency}</span>
+                <span>•</span>
+                <span class="${days <= (sub.leadDays || 3) ? 'text-champagne-400 font-medium' : ''}">Próx: ${formatSpanishDate(sub.nextDate)}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2.5 shrink-0">
+            <div class="text-right">
+              <p class="font-bold text-slate-50 text-sm sm:text-base">${formatMXN(sub.cost)} <span class="text-[11px] font-normal text-champagne-400">MXN</span></p>
+              <p class="text-[11px] text-slate-500">${formatMXN(annual)}/año</p>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-1">
+              <button onclick="openSubscriptionModal('${sub.id}')" title="Editar servicio" class="p-2 rounded-lg bg-obsidian-800 hover:bg-champagne-400/20 text-slate-400 hover:text-champagne-400 transition-colors">
+                <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+              </button>
+              <button onclick="deleteSubscription('${sub.id}')" title="Eliminar registro" class="p-2 rounded-lg bg-obsidian-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-colors">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDashboardSubscriptions() {
+      const container = document.getElementById('dashboard-subs-list');
+      if (appState.subscriptions.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full text-center py-8 border border-dashed border-slate-700 rounded-2xl">
+            <p class="text-sm text-slate-400 mb-3">Aún no has registrado ninguna suscripción.</p>
+            <button onclick="openSubscriptionModal()" class="px-4 py-2 rounded-xl bg-champagne-400 text-obsidian-950 font-semibold text-xs">+ Registrar primera suscripción</button>
+          </div>
+        `;
+        return;
+      }
+      container.innerHTML = appState.subscriptions.map(createSubscriptionCardHTML).join('');
+    }
+
+    function renderSubscriptionsList() {
+      const query = (document.getElementById('filter-search')?.value || '').toLowerCase();
+      const cat = document.getElementById('filter-category')?.value || 'all';
+      const usage = document.getElementById('filter-usage')?.value || 'all';
+      const grid = document.getElementById('full-subs-grid');
+
+      const filtered = appState.subscriptions.filter(s => {
+        const mText = s.name.toLowerCase().includes(query);
+        const mCat = cat === 'all' || s.category === cat;
+        const mUsage = usage === 'all' || (s.usage || 'activa') === usage;
+        return mText && mCat && mUsage;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-10 text-slate-400 text-sm">No hay servicios que coincidan con tu búsqueda.</div>`;
+      } else {
+        grid.innerHTML = filtered.map(createSubscriptionCardHTML).join('');
+      }
+      lucide.createIcons();
+    }
+
+    // ---------- RECORDATORIOS Y AUDITORÍA ÉTICA ----------
+    function renderNotifications() {
+      const lowUsageSubs = appState.subscriptions.filter(s => s.usage === 'poco_utilizada');
+      const lowUsageSection = document.getElementById('low-usage-section');
+      const lowUsageList = document.getElementById('low-usage-list');
+
+      if (lowUsageSubs.length > 0) {
+        lowUsageSection.classList.remove('hidden');
+        lowUsageList.innerHTML = lowUsageSubs.map(sub => `
+          <div class="p-3.5 rounded-2xl bg-obsidian-900 border border-slate-800 flex items-center justify-between gap-3">
+            <div>
+              <p class="text-sm font-semibold text-slate-100">${sub.name}</p>
+              <p class="text-xs text-slate-400">${formatMXN(sub.cost)} MXN (${sub.frequency}) • ${formatMXN(getAnnualEquivalent(sub))}/año</p>
+            </div>
+            <button onclick="navigateTo('guias')" class="px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 text-xs font-semibold shrink-0">
+              Ver guía →
+            </button>
+          </div>
+        `).join('');
+      } else {
+        lowUsageSection.classList.add('hidden');
+      }
+
+      const container = document.getElementById('notifications-list');
+      const sorted = [...appState.subscriptions].sort((a, b) => new Date(a.nextDate) - new Date(b.nextDate));
+
+      if (sorted.length === 0) {
+        container.innerHTML = '<div class="bg-obsidian-800 p-8 rounded-2xl text-center text-slate-400 text-sm">No tienes recordatorios programados.</div>';
+        return;
+      }
+
+      container.innerHTML = sorted.map(sub => {
+        const days = getDaysUntil(sub.nextDate);
+        const lead = sub.leadDays || 3;
+        const isAlertWindow = days <= lead;
+        const meta = CATEGORY_META[sub.category] || CATEGORY_META['Otra'];
+
+        if (isAlertWindow) {
+          return `
+            <div class="bg-obsidian-800 border-2 border-champagne-400/70 rounded-3xl p-5 shadow-gold-glow">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex items-center gap-3.5">
+                  <div class="w-12 h-12 rounded-2xl bg-champagne-400/15 text-champagne-400 flex items-center justify-center shrink-0">
+                    <i data-lucide="bell-ring" class="w-6 h-6"></i>
+                  </div>
+                  <div>
+                    <span class="text-xs font-semibold text-champagne-400 uppercase tracking-wider">Aviso Anticipado (${lead} días)</span>
+                    <h3 class="text-base sm:text-lg font-bold text-slate-50">${sub.name}</h3>
+                  </div>
+                </div>
+                <span class="px-3 py-1 rounded-full bg-red-500 text-white text-xs font-bold">
+                  ${days <= 0 ? 'Cobro hoy' : `En ${days} día${days === 1 ? '' : 's'}`}
+                </span>
+              </div>
+
+              <div class="mt-4 px-4 py-2.5 rounded-xl bg-champagne-400/10 border border-champagne-400/20 flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm">
+                <span class="text-slate-300">Fecha estimada de cobro: <strong class="text-slate-100">${formatSpanishDate(sub.nextDate)}</strong></span>
+                <span class="font-bold text-champagne-300">${formatMXN(sub.cost)} MXN</span>
+              </div>
+
+              <div class="mt-4 flex flex-wrap items-center justify-between gap-2">
+                <button onclick="navigateTo('guias')" class="px-3.5 py-2 rounded-xl bg-obsidian-900 hover:bg-obsidian-700 text-slate-300 text-xs font-medium">
+                  Revisar condiciones de cancelación
+                </button>
+                <button onclick="markCyclePaid('${sub.id}')" class="px-4 py-2.5 rounded-xl bg-champagne-400 hover:bg-champagne-300 text-obsidian-950 font-semibold text-xs sm:text-sm flex items-center gap-1.5">
+                  <i data-lucide="check" class="w-4 h-4"></i> Marcar como pagado / Renovar ciclo
+                </button>
+              </div>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="bg-obsidian-800 border border-slate-800 rounded-2xl p-4 sm:p-5 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3.5">
+              <div class="w-11 h-11 rounded-xl ${meta.bg} ${meta.text} flex items-center justify-center shrink-0">
+                <i data-lucide="${meta.icon}" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Recordatorio programado (${lead}d antes)</span>
+                <h4 class="font-semibold text-slate-100 text-sm sm:text-base">${sub.name}</h4>
+                <p class="text-xs text-slate-400 mt-0.5">${formatSpanishDate(sub.nextDate)} (faltan ${days} días)</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="font-bold text-slate-100 text-sm sm:text-base">${formatMXN(sub.cost)} MXN</span>
+              <button onclick="markCyclePaid('${sub.id}')" title="Avanzar al siguiente periodo" class="p-2.5 rounded-xl bg-obsidian-900 hover:bg-champagne-400/20 text-slate-300 hover:text-champagne-400 transition-colors">
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function advanceNextCycleDate(dateStr, frequency) {
+      const d = new Date(dateStr + 'T00:00:00');
+      const months = frequency === 'Trimestral' ? 3 : frequency === 'Semestral' ? 6 : frequency === 'Anual' ? 12 : 1;
+      d.setMonth(d.getMonth() + months);
+      return d.toISOString().split('T')[0];
+    }
+
+    function markCyclePaid(id) {
+      const sub = appState.subscriptions.find(s => s.id === id);
+      if (!sub) return;
+      sub.nextDate = advanceNextCycleDate(sub.nextDate, sub.frequency);
+      saveState();
+      renderAll();
+      showToast(`Ciclo renovado para ${sub.name}. Próximo cobro: ${formatSpanishDate(sub.nextDate)}`);
+    }
+
+    function advanceAllUpcoming() {
+      let count = 0;
+      appState.subscriptions.forEach(sub => {
+        if (getDaysUntil(sub.nextDate) <= (sub.leadDays || 3)) {
+          sub.nextDate = advanceNextCycleDate(sub.nextDate, sub.frequency);
+          count++;
+        }
+      });
+      if (count > 0) {
+        saveState();
+        renderAll();
+        showToast(`Se actualizaron ${count} ciclo(s) próximo(s).`);
+      } else {
+        showToast('No hay cobros inminentes dentro de su ventana de aviso.');
+      }
+    }
+
+    // ---------- GUÍAS DE CANCELACIÓN ----------
+    function renderGuides() {
+      const q = (document.getElementById('guide-search')?.value || '').toLowerCase();
+      const grid = document.getElementById('guides-grid');
+
+      const lowCount = appState.subscriptions.filter(s => s.usage === 'poco_utilizada').length;
+      document.getElementById('audit-savings-badge').textContent = `${lowCount} servicio${lowCount === 1 ? '' : 's'} poco utilizado${lowCount === 1 ? '' : 's'}`;
+
+      const filtered = CANCELLATION_GUIDES.filter(g =>
+        g.platform.toLowerCase().includes(q) || g.category.toLowerCase().includes(q)
+      );
+
+      grid.innerHTML = filtered.map(g => `
+        <div class="bg-obsidian-800 border border-slate-800 hover:border-champagne-400/50 rounded-2xl p-5 flex flex-col justify-between transition-all">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2.5 py-1 rounded-lg bg-champagne-400/15 text-champagne-400 text-xs font-semibold">${g.category}</span>
+              <span class="text-[11px] text-slate-400">Guía de referencia</span>
+            </div>
+            <h3 class="font-bold text-slate-100 text-base mb-1.5">${g.platform}</h3>
+            <p class="text-xs text-amber-300/90 bg-amber-500/10 border border-amber-500/20 rounded-xl p-2.5 mb-3">${g.cycleNote}</p>
+            <ol class="space-y-2 text-xs text-slate-300 list-decimal list-inside">
+              ${g.steps.map(step => `<li class="leading-relaxed">${step}</li>`).join('')}
+            </ol>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-[11px] text-slate-500">Gestión directa en proveedor</span>
+            <a href="${g.url}" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-champagne-400 hover:text-champagne-300 flex items-center gap-1">
+              <span>Ir al sitio oficial</span>
+              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    // ---------- GRÁFICO MIXTO EN CANVAS (TARJETA MARFIL) ----------
+    function drawExpensesChart() {
+      const canvas = document.getElementById('expensesChart');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      const rect = canvas.parentElement.getBoundingClientRect();
+      if (rect.width === 0) return;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+
+      const width = rect.width;
+      const height = rect.height;
+      ctx.clearRect(0, 0, width, height);
+
+      const currentMonthly = appState.subscriptions.reduce((acc, s) => acc + getMonthlyEquivalent(s), 0) || 397;
+      const labels = ['Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic', 'Ene'];
+      const factors = [0.85, 0.92, 1.05, 0.95, 1.0, 1.0, 1.0, 1.0];
+      const values = factors.map(f => Number((currentMonthly * f).toFixed(0)));
+      const maxVal = Math.max(...values) * 1.25;
+
+      const padLeft = 52;
+      const padRight = 16;
+      const padTop = 20;
+      const padBottom = 30;
+      const chartW = width - padLeft - padRight;
+      const chartH = height - padTop - padBottom;
+
+      ctx.strokeStyle = '#DCD5C7';
+      ctx.lineWidth = 1;
+      ctx.font = '500 10px Inter, sans-serif';
+      ctx.fillStyle = '#64748B';
+      ctx.textAlign = 'right';
+
+      for (let i = 0; i <= 4; i++) {
+        const y = padTop + (chartH / 4) * i;
+        const val = Math.round(maxVal - (maxVal / 4) * i);
+        ctx.beginPath();
+        ctx.moveTo(padLeft, y);
+        ctx.lineTo(width - padRight, y);
+        ctx.stroke();
+        ctx.fillText('$' + val, padLeft - 8, y + 3);
+      }
+
+      const slotW = chartW / labels.length;
+      const barW = Math.min(26, slotW * 0.52);
+      const points = [];
+
+      values.forEach((val, i) => {
+        const barH = (val / maxVal) * chartH;
+        const x = padLeft + slotW * i + (slotW - barW) / 2;
+        const y = padTop + chartH - barH;
+        points.push({ x: x + barW / 2, y: y + barH * 0.35 });
+
+        const activeAccent = getCurrentAccentConfig();
+        ctx.fillStyle = i >= 5 ? activeAccent.c500 : (i % 2 === 1 ? '#94A3B8' : activeAccent.c400);
+        ctx.beginPath();
+        ctx.roundRect(x, y, barW, barH, [6, 6, 0, 0]);
+        ctx.fill();
+
+        ctx.fillStyle = i === 5 ? '#181D27' : '#64748B';
+        ctx.font = i === 5 ? '700 11px Inter, sans-serif' : '500 10px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(labels[i], x + barW / 2, height - 10);
+      });
+
+      ctx.strokeStyle = '#181D27';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      points.forEach((pt, i) => i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y));
+      ctx.stroke();
+
+      points.forEach((pt, i) => {
+        ctx.fillStyle = i === 5 ? activeAccent.c400 : '#FAF9F6';
+        ctx.strokeStyle = '#181D27';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      });
+    }
+
+    // ---------- MODALES: SUSCRIPCIÓN, LÍMITE Y REGISTRO DE PERFIL ----------
+    function openSubscriptionModal(editId = null) {
+      // Validación estricta del límite de 3 suscripciones en Plan Gratis (Sección 9)
+      if (!editId && !isPremiumPlan() && appState.subscriptions.length >= FREE_PLAN_LIMIT) {
+        const limitModal = document.getElementById('limit-modal');
+        limitModal.classList.remove('hidden');
+        limitModal.classList.add('flex');
+        lucide.createIcons();
+        return;
+      }
+
+      const modal = document.getElementById('subscription-modal');
+      document.getElementById('subscription-form').reset();
+
+      if (editId) {
+        const sub = appState.subscriptions.find(s => s.id === editId);
+        if (!sub) return;
+        document.getElementById('modal-title').textContent = 'Editar Suscripción';
+        document.getElementById('sub-id').value = sub.id;
+        document.getElementById('sub-name').value = sub.name;
+        document.getElementById('sub-cost').value = sub.cost;
+        document.getElementById('sub-category').value = sub.category;
+        document.getElementById('sub-date').value = sub.nextDate;
+        document.getElementById('sub-lead-days').value = sub.leadDays || 3;
+        document.getElementById('sub-usage').value = sub.usage || 'activa';
+        selectFrequency(sub.frequency);
+      } else {
+        document.getElementById('modal-title').textContent = 'Registrar Suscripción';
+        document.getElementById('sub-id').value = '';
+        const d = new Date();
+        d.setDate(d.getDate() + 15);
+        document.getElementById('sub-date').value = d.toISOString().split('T')[0];
+        document.getElementById('sub-lead-days').value = '3';
+        document.getElementById('sub-usage').value = 'activa';
+        selectFrequency('Mensual');
+      }
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      lucide.createIcons();
+    }
+
+    function closeSubscriptionModal() {
+      const m = document.getElementById('subscription-modal');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+
+    function closeLimitModal() {
+      const m = document.getElementById('limit-modal');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+
+    function selectFrequency(freq) {
+      document.getElementById('sub-frequency').value = freq;
+      document.querySelectorAll('.freq-btn').forEach(btn => {
+        const active = btn.dataset.freq === freq;
+        btn.className = active
+          ? 'freq-btn py-2 px-3 rounded-xl text-xs font-semibold border transition-all bg-champagne-400 text-white border-champagne-500'
+          : 'freq-btn py-2 px-3 rounded-xl text-xs font-semibold border transition-all bg-white text-obsidian-800 border-ivory-300';
+      });
+    }
+
+    function quickFillService(name, cost, category) {
+      document.getElementById('sub-name').value = name;
+      document.getElementById('sub-cost').value = cost;
+      document.getElementById('sub-category').value = category;
+    }
+
+    function handleSaveSubscription(e) {
+      e.preventDefault();
+      const id = document.getElementById('sub-id').value;
+      const name = document.getElementById('sub-name').value.trim();
+      const cost = parseFloat(document.getElementById('sub-cost').value);
+      const category = document.getElementById('sub-category').value;
+      const frequency = document.getElementById('sub-frequency').value;
+      const nextDate = document.getElementById('sub-date').value;
+      const leadDays = parseInt(document.getElementById('sub-lead-days').value, 10) || 3;
+      const usage = document.getElementById('sub-usage').value;
+
+      if (!name || isNaN(cost) || cost <= 0) return;
+
+      if (id) {
+        const idx = appState.subscriptions.findIndex(s => s.id === id);
+        if (idx !== -1) {
+          appState.subscriptions[idx] = { id, name, cost, category, frequency, nextDate, leadDays, usage };
+          showToast(`Servicio "${name}" actualizado.`);
+        }
+      } else {
+        appState.subscriptions.push({
+          id: 'sub-' + Date.now(),
+          name, cost, category, frequency, nextDate, leadDays, usage
+        });
+        showToast(`¡${name} (${formatMXN(cost)} MXN) registrada!`);
+      }
+
+      saveState();
+      closeSubscriptionModal();
+      renderAll();
+    }
+
+    function deleteSubscription(id) {
+      const sub = appState.subscriptions.find(s => s.id === id);
+      if (!sub) return;
+      appState.subscriptions = appState.subscriptions.filter(s => s.id !== id);
+      saveState();
+      renderAll();
+      showToast(`Se eliminó "${sub.name}" de tu lista.`);
+    }
+
+    function selectPlan(planKey) {
+      if (planKey === 'gratis' && appState.subscriptions.length > FREE_PLAN_LIMIT) {
+        showToast(`Tienes ${appState.subscriptions.length} servicios activos. Elimina algunos para volver al límite de 3 del Plan Gratis.`, 'warning');
+        return;
+      }
+      appState.plan = planKey;
+      saveState();
+      renderAll();
+      const names = {
+        gratis: 'Plan Gratis ($0 MXN)',
+        premium_mensual: 'Premium Mensual ($49 MXN/mes)',
+        premium_anual: 'Premium Anual ($449 MXN/año — Ahorro $139 MXN)'
+      };
+      showToast(`Plan actualizado a: ${names[planKey]}`);
+    }
+
+    // ---------- REGISTRO DE USUARIO (SECCIÓN 10) ----------
+    function openProfileModal() {
+      const p = appState.profile || {};
+      document.getElementById('prof-name').value = p.name || '';
+      document.getElementById('prof-email').value = p.email || '';
+      document.getElementById('prof-age').value = p.ageRange || '18–24';
+      document.getElementById('prof-plan-interest').value = p.planInterest || 'Gratis';
+      document.getElementById('prof-goal').value = p.goal || 'Recordatorios';
+      document.getElementById('prof-consent').checked = Boolean(p.consent);
+
+      const m = document.getElementById('profile-modal');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+      lucide.createIcons();
+    }
+
+    function closeProfileModal() {
+      const m = document.getElementById('profile-modal');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+
+    function handleSaveUserProfile(e) {
+      e.preventDefault();
+      appState.profile = {
+        name: document.getElementById('prof-name').value.trim(),
+        email: document.getElementById('prof-email').value.trim(),
+        ageRange: document.getElementById('prof-age').value,
+        planInterest: document.getElementById('prof-plan-interest').value,
+        goal: document.getElementById('prof-goal').value,
+        consent: document.getElementById('prof-consent').checked
+      };
+      saveState();
+      closeProfileModal();
+      updatePlanAndProfileUI();
+      applyCustomTheme();
+      renderCustomizerUI();
+      showToast('Perfil y consentimiento de privacidad guardados.');
+    }
+
+
+
+    // ---------- PERSONALIZACIÓN DE INTERFAZ (EXCLUSIVO PREMIUM) ----------
+    const UI_ACCENTS = {
+      champagne: { name: 'Oro Champán', c300: '#E5CE94', c400: '#D4B46A', c500: '#C5A059', c600: '#A68340', glow: 'rgba(212, 180, 106, 0.25)', glowStrong: 'rgba(212, 180, 106, 0.45)' },
+      emerald:   { name: 'Esmeralda MX', c300: '#6EE7B7', c400: '#34D399', c500: '#10B981', c600: '#059669', glow: 'rgba(52, 211, 153, 0.25)', glowStrong: 'rgba(52, 211, 153, 0.45)' },
+      sapphire:  { name: 'Zafiro Azul', c300: '#7DD3FC', c400: '#38BDF8', c500: '#0EA5E9', c600: '#0284C7', glow: 'rgba(56, 189, 248, 0.25)', glowStrong: 'rgba(56, 189, 248, 0.45)' },
+      amethyst:  { name: 'Amatista', c300: '#D8B4FE', c400: '#C084FC', c500: '#A855F7', c600: '#9333EA', glow: 'rgba(192, 132, 252, 0.25)', glowStrong: 'rgba(192, 132, 252, 0.45)' },
+      coral:     { name: 'Coral Vivo', c300: '#FDA4AF', c400: '#FB7185', c500: '#F43F5E', c600: '#E11D48', glow: 'rgba(251, 113, 133, 0.25)', glowStrong: 'rgba(251, 113, 133, 0.45)' },
+      amber:     { name: 'Ámbar Solar', c300: '#FCD34D', c400: '#FBBF24', c500: '#F59E0B', c600: '#D97706', glow: 'rgba(251, 191, 36, 0.25)', glowStrong: 'rgba(251, 191, 36, 0.45)' }
+    };
+
+    const UI_BG_THEMES = {
+      obsidian: { name: 'Obsidiana Clásico', desc: 'Tono oscuro elegante predeterminado', b950: '#0E1117', b900: '#12161E', b850: '#181D27', b800: '#1E2430', b700: '#272F3E' },
+      midnight: { name: 'Medianoche Índigo', desc: 'Profundidad azul nocturno', b950: '#090D16', b900: '#0D1321', b850: '#131B2E', b800: '#19233B', b700: '#23304F' },
+      carbon:   { name: 'Carbón Puro (OLED)', desc: 'Negro profundo de alto contraste', b950: '#050505', b900: '#0A0A0B', b850: '#121214', b800: '#19191C', b700: '#252529' },
+      forest:   { name: 'Bosque Profundo', desc: 'Matiz verde pizarra sereno', b950: '#0A1210', b900: '#0E1815', b850: '#14221E', b800: '#1A2C27', b700: '#243B34' }
+    };
+
+    const UI_FONTS = [
+      { id: 'Inter', label: 'Inter (Moderna)', css: "'Inter', system-ui, sans-serif" },
+      { id: 'Plus Jakarta Sans', label: 'Jakarta (Suave)', css: "'Plus Jakarta Sans', sans-serif" },
+      { id: 'Space Grotesk', label: 'Space (Geométrica)', css: "'Space Grotesk', sans-serif" }
+    ];
+
+    function getUISettings() {
+      if (!appState.uiSettings) {
+        appState.uiSettings = {
+          accent: 'champagne',
+          bgTheme: 'obsidian',
+          font: 'Inter',
+          radius: 'rounded',
+          density: 'comfortable',
+          showBanner: true,
+          showChart: true,
+          showCategories: true
+        };
+      }
+      return appState.uiSettings;
+    }
+
+    function getCurrentAccentConfig() {
+      const s = getUISettings();
+      if (!isPremiumPlan()) return UI_ACCENTS.champagne;
+      return UI_ACCENTS[s.accent] || UI_ACCENTS.champagne;
+    }
+
+    function applyCustomTheme() {
+      const root = document.documentElement;
+      const body = document.body;
+      const premium = isPremiumPlan();
+      const s = getUISettings();
+
+      // Si no es Premium, aplicamos estilo base estándar
+      const accent = premium ? (UI_ACCENTS[s.accent] || UI_ACCENTS.champagne) : UI_ACCENTS.champagne;
+      const bg = premium ? (UI_BG_THEMES[s.bgTheme] || UI_BG_THEMES.obsidian) : UI_BG_THEMES.obsidian;
+      const fontObj = premium ? (UI_FONTS.find(f => f.id === s.font) || UI_FONTS[0]) : UI_FONTS[0];
+
+      root.style.setProperty('--accent-300', accent.c300);
+      root.style.setProperty('--accent-400', accent.c400);
+      root.style.setProperty('--accent-500', accent.c500);
+      root.style.setProperty('--accent-600', accent.c600);
+      root.style.setProperty('--accent-glow', accent.glow);
+      root.style.setProperty('--accent-glow-strong', accent.glowStrong);
+
+      root.style.setProperty('--bg-950', bg.b950);
+      root.style.setProperty('--bg-900', bg.b900);
+      root.style.setProperty('--bg-850', bg.b850);
+      root.style.setProperty('--bg-800', bg.b800);
+      root.style.setProperty('--bg-700', bg.b700);
+      root.style.setProperty('--ui-font-main', fontObj.css);
+
+      body.classList.remove('ui-sharp', 'ui-pill', 'ui-compact');
+      if (premium) {
+        if (s.radius === 'sharp') body.classList.add('ui-sharp');
+        if (s.radius === 'pill') body.classList.add('ui-pill');
+        if (s.density === 'compact') body.classList.add('ui-compact');
+      }
+
+      // Visibilidad de módulos del panel principal
+      const showBanner = premium ? s.showBanner !== false : true;
+      const showChart = premium ? s.showChart !== false : true;
+      const showCategories = premium ? s.showCategories !== false : true;
+
+      const bannerEl = document.getElementById('privacy-info-banner');
+      const chartCard = document.getElementById('dashboard-chart-card');
+      const catCard = document.getElementById('dashboard-category-card');
+      const analyticsRow = document.getElementById('dashboard-analytics-row');
+
+      if (bannerEl) bannerEl.classList.toggle('hidden', !showBanner);
+      if (chartCard) {
+        chartCard.classList.toggle('hidden', !showChart);
+      }
+      if (catCard) {
+        catCard.classList.toggle('hidden', !showCategories);
+      }
+      if (analyticsRow) {
+        analyticsRow.classList.toggle('hidden', !showChart && !showCategories);
+      }
+    }
+
+    function renderCustomizerUI() {
+      const premium = isPremiumPlan();
+      const s = getUISettings();
+
+      const lockBox = document.getElementById('customizer-free-lock');
+      const workspace = document.getElementById('customizer-workspace');
+      const navBadge = document.getElementById('nav-custom-badge');
+
+      if (lockBox) lockBox.classList.toggle('hidden', premium);
+      if (workspace) {
+        workspace.classList.toggle('opacity-50', !premium);
+        workspace.classList.toggle('pointer-events-none', !premium);
+        workspace.classList.toggle('select-none', !premium);
+      }
+      if (navBadge) {
+        navBadge.textContent = premium ? 'ACTIVO' : 'PRO';
+      }
+
+      // Render Accent Presets
+      const accentGrid = document.getElementById('accent-presets-grid');
+      if (accentGrid) {
+        accentGrid.innerHTML = Object.entries(UI_ACCENTS).map(([key, item]) => {
+          const active = s.accent === key;
+          return `
+            <button type="button" onclick="setUISetting('accent', '${key}')"
+              class="p-2.5 rounded-xl border text-left flex items-center gap-2.5 transition-all ${
+                active ? 'bg-obsidian-800 border-champagne-400 text-slate-50 shadow-sm' : 'bg-obsidian-850 border-slate-800 text-slate-300 hover:border-slate-600'
+              }">
+              <span class="w-5 h-5 rounded-full shrink-0 border border-white/20" style="background-color: ${item.c400}"></span>
+              <span class="text-xs font-medium truncate">${item.name}</span>
+            </button>
+          `;
+        }).join('');
+      }
+
+      // Render Background Presets
+      const bgGrid = document.getElementById('bg-presets-grid');
+      if (bgGrid) {
+        bgGrid.innerHTML = Object.entries(UI_BG_THEMES).map(([key, item]) => {
+          const active = s.bgTheme === key;
+          return `
+            <button type="button" onclick="setUISetting('bgTheme', '${key}')"
+              class="p-3 rounded-xl border text-left transition-all ${
+                active ? 'bg-obsidian-800 border-champagne-400 text-slate-50' : 'bg-obsidian-850 border-slate-800 text-slate-300 hover:border-slate-600'
+              }">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="w-4 h-4 rounded-md border border-slate-600" style="background-color: ${item.b900}"></span>
+                <span class="text-xs font-semibold">${item.name}</span>
+              </div>
+              <p class="text-[11px] text-slate-400 leading-tight">${item.desc}</p>
+            </button>
+          `;
+        }).join('');
+      }
+
+      // Render Font Options
+      const fontGrid = document.getElementById('font-options-grid');
+      if (fontGrid) {
+        fontGrid.innerHTML = UI_FONTS.map(f => {
+          const active = s.font === f.id;
+          return `
+            <button type="button" onclick="setUISetting('font', '${f.id}')"
+              style="font-family: ${f.css}"
+              class="py-2 px-2.5 rounded-xl border text-xs font-medium transition-all ${
+                active ? 'bg-champagne-400/20 border-champagne-400 text-champagne-300 font-semibold' : 'bg-obsidian-850 border-slate-800 text-slate-300 hover:border-slate-600'
+              }">
+              ${f.label.split(' ')[0]}
+            </button>
+          `;
+        }).join('');
+      }
+
+      // Render Radius Options
+      const radiusGrid = document.getElementById('radius-options-grid');
+      if (radiusGrid) {
+        const radii = [
+          { id: 'sharp', label: 'Recto' },
+          { id: 'rounded', label: 'Suave' },
+          { id: 'pill', label: 'Amplio' }
+        ];
+        radiusGrid.innerHTML = radii.map(r => {
+          const active = s.radius === r.id;
+          return `
+            <button type="button" onclick="setUISetting('radius', '${r.id}')"
+              class="py-2 px-2 rounded-xl border text-xs font-medium transition-all ${
+                active ? 'bg-champagne-400/20 border-champagne-400 text-champagne-300 font-semibold' : 'bg-obsidian-850 border-slate-800 text-slate-300 hover:border-slate-600'
+              }">
+              ${r.label}
+            </button>
+          `;
+        }).join('');
+      }
+
+      // Render Density Options
+      const densityGrid = document.getElementById('density-options-grid');
+      if (densityGrid) {
+        const densities = [
+          { id: 'comfortable', label: 'Cómoda' },
+          { id: 'compact', label: 'Compacta' }
+        ];
+        densityGrid.innerHTML = densities.map(d => {
+          const active = s.density === d.id;
+          return `
+            <button type="button" onclick="setUISetting('density', '${d.id}')"
+              class="py-2 px-2 rounded-xl border text-xs font-medium transition-all ${
+                active ? 'bg-champagne-400/20 border-champagne-400 text-champagne-300 font-semibold' : 'bg-obsidian-850 border-slate-800 text-slate-300 hover:border-slate-600'
+              }">
+              ${d.label}
+            </button>
+          `;
+        }).join('');
+      }
+
+      // Sync widget checkboxes
+      const chkBanner = document.getElementById('widget-toggle-banner');
+      const chkChart = document.getElementById('widget-toggle-chart');
+      const chkCat = document.getElementById('widget-toggle-categories');
+      if (chkBanner) chkBanner.checked = s.showBanner !== false;
+      if (chkChart) chkChart.checked = s.showChart !== false;
+      if (chkCat) chkCat.checked = s.showCategories !== false;
+
+      lucide.createIcons();
+    }
+
+    function setUISetting(key, value) {
+      if (!isPremiumPlan()) {
+        showToast('Actualiza a Premium para personalizar la interfaz.', 'warning');
+        return;
+      }
+      const s = getUISettings();
+      s[key] = value;
+      saveState();
+      applyCustomTheme();
+      renderCustomizerUI();
+      drawExpensesChart();
+    }
+
+    function updateWidgetVisibility() {
+      if (!isPremiumPlan()) return;
+      const s = getUISettings();
+      s.showBanner = document.getElementById('widget-toggle-banner').checked;
+      s.showChart = document.getElementById('widget-toggle-chart').checked;
+      s.showCategories = document.getElementById('widget-toggle-categories').checked;
+      saveState();
+      applyCustomTheme();
+      if (s.showChart) setTimeout(drawExpensesChart, 30);
+    }
+
+    function resetCustomTheme() {
+      if (!isPremiumPlan()) return;
+      appState.uiSettings = {
+        accent: 'champagne',
+        bgTheme: 'obsidian',
+        font: 'Inter',
+        radius: 'rounded',
+        density: 'comfortable',
+        showBanner: true,
+        showChart: true,
+        showCategories: true
+      };
+      saveState();
+      applyCustomTheme();
+      renderCustomizerUI();
+      drawExpensesChart();
+      showToast('Interfaz restaurada al diseño original Suscript!');
+    }
+
+
+    // ---------- SOPORTE PWA INSTALABLE EN CELULAR (iOS / ANDROID) ----------
+    (function setupInstallablePWA() {
+      // 1. Generar ícono SVG en Data URI para pantalla de inicio
+      const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <rect width="512" height="512" rx="112" fill="#12161E"/>
+        <polygon points="145,75 367,75 468,192 256,450 44,192" fill="none" stroke="#D4B46A" stroke-width="18" stroke-linejoin="round"/>
+        <polyline points="44,192 468,192" fill="none" stroke="#D4B46A" stroke-width="12" opacity="0.7"/>
+        <text x="256" y="285" text-anchor="middle" fill="#F8FAFC" font-family="Georgia, serif" font-weight="700" font-size="185">S</text>
+      </svg>`;
+      const iconUrl = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgIcon)));
+
+      // Apple Touch Icon
+      const appleLink = document.createElement('link');
+      appleLink.rel = 'apple-touch-icon';
+      appleLink.href = iconUrl;
+      document.head.appendChild(appleLink);
+
+      // 2. Web App Manifest dinámico
+      const manifest = {
+        name: 'Suscript! — Control de Suscripciones MXN',
+        short_name: 'Suscript!',
+        description: 'Control transparente y privado de suscripciones en Pesos Mexicanos (MXN)',
+        start_url: './index.html',
+        display: 'standalone',
+        orientation: 'portrait',
+        background_color: '#12161E',
+        theme_color: '#12161E',
+        icons: [
+          { src: iconUrl, sizes: '192x192', type: 'image/svg+xml', purpose: 'any maskable' },
+          { src: iconUrl, sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable' }
+        ]
+      };
+      const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+      const manifestLink = document.createElement('link');
+      manifestLink.rel = 'manifest';
+      manifestLink.href = URL.createObjectURL(manifestBlob);
+      document.head.appendChild(manifestLink);
+
+      // 3. Registrar Service Worker si se ejecuta desde HTTPS/localhost
+      if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      }
+    })();
+
+    let deferredInstallPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      const btn = document.getElementById('btn-install-app');
+      if (btn) btn.classList.remove('hidden');
+    });
+
+    async function triggerInstallApp() {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        const { outcome } = await deferredInstallPrompt.userChoice;
+        if (outcome === 'accepted') {
+          showToast('¡Suscript! se está instalando en tu celular!');
+        }
+        deferredInstallPrompt = null;
+      } else {
+        openInstallGuideModal();
+      }
+    }
+
+    function openInstallGuideModal() {
+      const m = document.getElementById('install-modal');
+      if (m) {
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+        lucide.createIcons();
+      }
+    }
+
+    function closeInstallGuideModal() {
+      const m = document.getElementById('install-modal');
+      if (m) {
+        m.classList.add('hidden');
+        m.classList.remove('flex');
+      }
+    }
+
+    // ---------- TOAST NOTIFICATIONS ----------
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const borderClass = type === 'warning' ? 'border-amber-400' : 'border-champagne-400';
+      toast.className = `pointer-events-auto bg-obsidian-850 text-slate-50 border ${borderClass} px-4 py-3 rounded-2xl shadow-2xl text-xs sm:text-sm font-medium flex items-center gap-2.5 max-w-sm animate-[fadeIn_0.2s_ease-out]`;
+      toast.innerHTML = `
+        <i data-lucide="${type === 'warning' ? 'alert-triangle' : 'check-circle-2'}" class="w-4 h-4 ${type === 'warning' ? 'text-amber-400' : 'text-champagne-400'} shrink-0"></i>
+        <span>${message}</span>
+      `;
+      container.appendChild(toast);
+      lucide.createIcons();
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // ---------- INICIALIZACIÓN ----------
+    window.addEventListener('resize', () => {
+      if (!document.getElementById('view-inicio').classList.contains('hidden')) {
+        drawExpensesChart();
+      }
+    });
+
+    window.onload = function () {
+      renderAll();
+    };
+  </script>
+</body>
+</html>

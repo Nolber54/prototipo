@@ -1,0 +1,18 @@
+{
+  "name": "Suscript! — Control de Suscripciones MXN",
+  "short_name": "Suscript!",
+  "description": "Control transparente y privado de suscripciones en Pesos Mexicanos (MXN)",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#12161E",
+  "theme_color": "#12161E",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
